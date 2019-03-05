@@ -2,6 +2,8 @@ const webpack = require('webpack');
 const path = require('path');
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader');
 
+const { NODE_ENV = 'development' } = process.env;
+
 const base = {
   entry: {
     background: './src/scripts/background.js',
