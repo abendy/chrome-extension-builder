@@ -2,6 +2,7 @@ const babel = require('gulp-babel');
 const del = require('del');
 const { dest, parallel, series, src } = require('gulp');
 const { pipeline } = require('readable-stream');
+const watcher = require('gulp').watch;
 
 const dirs = {
   src: 'src/scripts',
@@ -16,6 +17,8 @@ const scripts = () => pipeline(
   dest(`${dirs.dest}`),
 );
 
+const watch = () => watcher(`${dirs.src}/*.js`, scripts);
+
 const build = series(clean, scripts);
 
 module.exports = {
@@ -23,4 +26,5 @@ module.exports = {
   build,
   clean,
   scripts,
+  watch,
 };
