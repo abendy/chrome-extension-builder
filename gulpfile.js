@@ -1,6 +1,5 @@
-const babel = require('gulp-babel');
 const del = require('del');
-const { dest, parallel, series, src } = require('gulp');
+const { dest, series, src } = require('gulp');
 const named = require('vinyl-named');
 const { pipeline } = require('readable-stream');
 const watcher = require('gulp').watch;
