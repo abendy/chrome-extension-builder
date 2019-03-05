@@ -38,6 +38,16 @@ const development = {
   module: {
     ...base.module,
   },
+  plugins: [
+    new ChromeExtensionReloader({
+      port: 9090,
+      reloadPage: true,
+      entries: {
+        contentScript: 'content',
+        background: 'background',
+      },
+    }),
+  ],
 };
 
 const production = {
@@ -50,14 +60,6 @@ const production = {
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false,
-    }),
-    new ChromeExtensionReloader({
-      port: 9090,
-      reloadPage: true,
-      entries: {
-        contentScript: 'content',
-        background: 'background',
-      },
     }),
   ],
 };
