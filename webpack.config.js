@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
+const ChromeExtensionReloader = require('webpack-chrome-extension-reloader');
 
 const base = {
   entry: {
@@ -31,6 +32,7 @@ const development = {
   ...base,
   mode: 'development',
   devtool: 'source-map',
+  watch: true,
   module: {
     ...base.module,
   },
@@ -46,6 +48,14 @@ const production = {
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false,
+    }),
+    new ChromeExtensionReloader({
+      port: 9090,
+      reloadPage: true,
+      entries: {
+        contentScript: 'content',
+        background: 'background',
+      },
     }),
   ],
 };
