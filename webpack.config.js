@@ -10,7 +10,7 @@ const base = {
     content: './src/scripts/content.js',
   },
   output: {
-    path: path.join(__dirname, 'app/assets/scripts/'),
+    path: path.join(__dirname, 'build/assets/scripts/'),
     filename: '[name].js',
   },
   module: {
