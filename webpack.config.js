@@ -43,8 +43,8 @@ const development = {
       port: 9090,
       reloadPage: true,
       entries: {
-        contentScript: 'content',
         background: 'background',
+        contentScript: 'content',
       },
     }),
   ],
