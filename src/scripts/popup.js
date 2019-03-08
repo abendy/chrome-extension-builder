@@ -1,0 +1,66 @@
+import ext from './ext';
+import storage from './storage';
+
+console.log('popup loaded...');
+
+const popup = document.getElementById('app');
+storage.get('color', (resp) => {
+  const { color } = resp;
+  if (color) {
+    popup.style.backgroundColor = color;
+  }
+});
+
+const template = (data) => {
+  const json = JSON.stringify(data);
+  return (`
+  <div class='site-description'>
+    <h3 class='title'>${data.title}</h3>
+    <p class='description'>${data.description}</p>
+    <a href='${data.url}' target='_blank' class='url'>${data.url}</a>
+  </div>
+  <div class='action-container'>
+    <button data-bookmark='${json}' id='save-btn' class='btn btn-primary'>Save</button>
+  </div>
+  `);
+};
+const renderMessage = (message) => {
+  const displayContainer = document.getElementById('display-container');
+  displayContainer.innerHTML = `<p class='message'>${message}</p>`;
+};
+
+const renderBookmark = (data) => {
+  const displayContainer = document.getElementById('display-container');
+  if (data) {
+    const tmpl = template(data);
+    displayContainer.innerHTML = tmpl;
+  } else {
+    renderMessage('Sorry, could not extract this page\'s title and URL');
+  }
+};
+
+ext.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  const activeTab = tabs[0];
+  // eslint-disable-next-line no-undef
+  chrome.tabs.sendMessage(activeTab.id, { action: 'process-page' }, renderBookmark);
+});
+
+popup.addEventListener('click', (e) => {
+  if (e.target && e.target.matches('#save-btn')) {
+    e.preventDefault();
+    const data = e.target.getAttribute('data-bookmark');
+    ext.runtime.sendMessage({ action: 'perform-save', data }, (response) => {
+      if (response && response.action === 'saved') {
+        renderMessage('Your bookmark was saved successfully!');
+      } else {
+        renderMessage('Sorry, there was an error while saving your bookmark.');
+      }
+    });
+  }
+});
+
+const optionsLink = document.querySelector('.js-options');
+optionsLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  ext.tabs.create({ url: ext.extension.getURL('options.html') });
+});
