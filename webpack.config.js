@@ -30,6 +30,7 @@ const base = {
   },
 };
 
+// eslint-disable-next-line no-unused-vars
 const development = {
   ...base,
   mode: 'development',
@@ -50,6 +51,7 @@ const development = {
   ],
 };
 
+// eslint-disable-next-line no-unused-vars
 const production = {
   ...base,
   mode: 'production',
@@ -64,9 +66,4 @@ const production = {
   ],
 };
 
-// eslint-disable-next-line no-undef
-if (NODE_ENV === 'development') {
-  module.exports = development;
-} else {
-  module.exports = production;
-}
+module.exports = NODE_ENV;
