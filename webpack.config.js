@@ -34,7 +34,7 @@ const base = {
 const development = {
   ...base,
   mode: 'development',
-  devtool: 'source-map',
+  devtool: (NODE_ENV === 'development' ? 'source-map' : 'eval'),
   watch: true,
   module: {
     ...base.module,
