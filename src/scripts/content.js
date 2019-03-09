@@ -1,22 +1,16 @@
 import Messenger from 'ext-messenger';
-import Messages from './messages';
 
 const messenger = new Messenger();
 
 const messageHandler = (message, from, sender, sendResponse) => {
-  const response = {
-    'content message': message,
-    'content from': from,
-    'content sender': sender,
-  };
-  // console.log(response);
-  sendResponse({ 'content response': response });
+  if (message.event === 'tabs.onUpdated') {
+    console.log(message.event, message.tab);
+  }
+
+  if (message.event === 'browserAction.onClicked') {
+    console.log(message.event, message.tab);
+    sendResponse(`click received on tab ${message.tab.id}`);
+  }
 };
 
-const connection = messenger.initConnection('main', messageHandler);
-
-connection.sendMessage('background:main', {
-  name: Messages.GET_CURRENT_STATE,
-}).then((response) => {
-  console.log(response);
-});
+messenger.initConnection('main', messageHandler);
