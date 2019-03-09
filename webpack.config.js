@@ -8,6 +8,8 @@ const base = {
   entry: {
     background: './src/scripts/background.js',
     content: './src/scripts/content.js',
+    popup: './src/scripts/popup.js',
+    options: './src/scripts/options.js',
   },
   output: {
     path: path.join(__dirname, 'build/assets/scripts/'),
@@ -46,6 +48,8 @@ const development = {
       entries: {
         background: 'background',
         contentScript: 'content',
+        popup: 'popup',
+        options: 'options',
       },
     }),
   ],
