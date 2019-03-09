@@ -1,4 +1,4 @@
-import ext from './ext';
+import ext from './browser-api';
 import storage from './storage';
 
 console.log('popup loaded...');

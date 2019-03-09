@@ -1,4 +1,5 @@
 import Messenger from 'ext-messenger';
+import ext from './browser-api';
 
 const messenger = new Messenger();
 
@@ -14,7 +15,6 @@ const messageHandler = (message, from, sender, sendResponse) => {
 };
 
 messenger.initConnection('main', messageHandler);
-import ext from './ext';
 
 console.log('content loaded...');
 

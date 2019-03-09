@@ -1,5 +1,6 @@
 import Messenger from 'ext-messenger';
 import Messages from './messages';
+import ext from './browser-api';
 
 const messenger = new Messenger();
 
@@ -29,7 +30,6 @@ chrome.browserAction.onClicked.addListener((tab) => {
     console.log('response', response);
   });
 });
-import ext from './ext';
 
 console.log('background loaded...');
 
