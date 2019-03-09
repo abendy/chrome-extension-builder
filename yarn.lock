@@ -1857,6 +1857,13 @@ expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   dependencies:
     homedir-polyfill "^1.0.1"
 
+ext-messenger@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/ext-messenger/-/ext-messenger-3.0.1.tgz#0bc5a1e0ea2634ba0a1288d2c72b2bc3085bbf11"
+  integrity sha512-R3LnFIKm3lHHEe+qmLnSdlDJvTgrMpVa3U/K37kQkS2O2CkBVE+1YEYR6DqgrHdijtnWdx2mU17Q77nd/7t17g==
+  dependencies:
+    logdown "^2.0.3"
+
 extend-shallow@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/extend-shallow/-/extend-shallow-2.0.1.tgz#51af7d614ad9a9f610ea1bafbb989d6b1c56890f"
@@ -2700,6 +2707,11 @@ lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.4:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
+
+logdown@^2.0.3:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/logdown/-/logdown-2.2.0.tgz#23698490bb0f4eab8e93205c6209d31c06de35b2"
+  integrity sha1-I2mEkLsPTquOkyBcYgnTHAbeNbI=
 
 loose-envify@^1.0.0:
   version "1.4.0"
