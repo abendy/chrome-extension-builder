@@ -61,6 +61,7 @@ const development = {
     }),
     new MiniCssExtractPlugin({
       filename: '../styles/[name].css',
+      chunkFilename: '[id].css',
     }),
     new WebpackShellPlugin({
       onBuildStart: [
