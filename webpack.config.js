@@ -18,6 +18,7 @@ const base = {
     path: path.join(__dirname, 'build/assets/scripts/'),
     filename: '[name].js',
   },
+  devtool: (NODE_ENV === 'development' ? 'source-map' : 'eval'),
   module: {
     rules: [{
       enforce: 'pre',
@@ -45,7 +46,6 @@ const base = {
 const development = {
   ...base,
   mode: 'development',
-  devtool: (NODE_ENV === 'development' ? 'source-map' : 'eval'),
   watch: true,
   module: {
     ...base.module,
