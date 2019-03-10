@@ -66,8 +66,8 @@ const development = {
     }),
     new WebpackShellPlugin({
       onBuildStart: [
-        'rm -f build/assets/scripts/*.js',
-        'rm -f build/assets/styles/*.css',
+        'rm -f build/assets/scripts/*',
+        'rm -f build/assets/styles/*',
       ],
     }),
   ],
