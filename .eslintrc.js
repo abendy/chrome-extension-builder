@@ -35,6 +35,8 @@ module.exports = {
     "no-use-before-define": 2,
     "no-undef": 2,
     "no-unused-vars": 1,
-    "no-case-declarations": 0
+    "no-case-declarations": 0,
+    // allow debugger during development
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }
 };
