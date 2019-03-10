@@ -24,12 +24,10 @@ const base = {
       enforce: 'pre',
       test: /\.js$/,
       exclude: /node_modules/,
-      use: 'eslint-loader',
-    },
-    {
-      test: /\.js$/,
-      exclude: /node_modules/,
-      use: 'babel-loader',
+      use: [
+        'eslint-loader',
+        'babel-loader',
+      ],
     },
     {
       test: /\.(sa|sc|c)ss$/,
