@@ -70,6 +70,7 @@ const development = {
         'rm -f build/assets/styles/*',
       ],
     }),
+    new WebpackNotifierPlugin({ excludeWarnings: true }),
   ],
 };
 
@@ -84,7 +85,6 @@ const production = {
       minimize: true,
       debug: false,
     }),
-    new WebpackNotifierPlugin({ excludeWarnings: true }),
   ],
 };
 
