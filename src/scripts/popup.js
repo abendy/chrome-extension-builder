@@ -1,6 +1,6 @@
 import ext from './browser-api';
 import storage from './storage';
-import '../scss/popup.scss';
+import '../styles/popup.scss';
 
 const popup = document.getElementById('app');
 storage.get('color', (resp) => {

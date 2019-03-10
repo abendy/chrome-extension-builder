@@ -1,4 +1,5 @@
 import storage from './storage';
+import '../styles/options.scss';
 
 const colorSelectors = document.querySelectorAll('.js-radio');
 
