@@ -1,6 +1,24 @@
+import Messenger from 'ext-messenger';
 import ext from './browser-api';
 import storage from './storage';
 import '../styles/popup.scss';
+
+/* messenger */
+
+const messenger = new Messenger();
+
+const connection = messenger.initConnection('main');
+
+ext.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  const activeTab = tabs[0];
+
+  connection.sendMessage(`content_script:main:${activeTab.id}`, {
+    message: 'popup open',
+    activeTab,
+  });
+});
+
+/* app */
 
 const popup = document.getElementById('app');
 storage.get('color', (resp) => {
@@ -23,6 +41,7 @@ const template = (data) => {
   </div>
   `);
 };
+
 const renderMessage = (message) => {
   const displayContainer = document.getElementById('display-container');
   displayContainer.innerHTML = `<p class='message'>${message}</p>`;
@@ -40,7 +59,6 @@ const renderBookmark = (data) => {
 
 ext.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   const activeTab = tabs[0];
-  // eslint-disable-next-line no-undef
   chrome.tabs.sendMessage(activeTab.id, { action: 'process-page' }, renderBookmark);
 });
 

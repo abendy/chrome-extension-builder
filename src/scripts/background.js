@@ -1,6 +1,7 @@
 import Messenger from 'ext-messenger';
-import Messages from './messages';
 import ext from './browser-api';
+
+/* messenger */
 
 const messenger = new Messenger();
 
@@ -16,20 +17,17 @@ const connection = messenger.initConnection('main');
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   connection.sendMessage(`content_script:main:${tabId}`, {
-    event: Messages.TABS_ON_UPDATED,
+    message: `tab ${tabId} updated`,
     tab,
+  }).then((response) => {
+    console.log('response received:', response);
   });
 });
 
-chrome.browserAction.onClicked.addListener((tab) => {
-  connection.sendMessage(`content_script:main:${tab.id}`, {
-    event: Messages.BROWSERACTION_CLICK,
-    windowSelf: window.self === window.top,
-    tab,
-  }).then((response) => {
-    console.log('response', response);
-  });
-});
+/* app */
+
+// chrome.browserAction.onClicked.addListener((tab) => {
+// });
 
 ext.runtime.onMessage.addListener(
   (request, sender, sendResponse) => {

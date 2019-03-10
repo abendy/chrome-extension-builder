@@ -1,20 +1,21 @@
 import Messenger from 'ext-messenger';
 import ext from './browser-api';
 
+/* messenger */
+
 const messenger = new Messenger();
 
 const messageHandler = (message, from, sender, sendResponse) => {
-  if (message.event === 'tabs.onUpdated') {
-    console.log(message.event, message.tab);
-  }
+  console.log('from:', from, message);
 
-  if (message.event === 'browserAction.onClicked') {
-    console.log(message.event, message.tab);
-    sendResponse(`click received on tab ${message.tab.id}`);
+  if (from === 'background:main') {
+    sendResponse(`tab ${message.tab.id} updated`);
   }
 };
 
 messenger.initConnection('main', messageHandler);
+
+/* app */
 
 const extractTags = () => {
   const data = {};
