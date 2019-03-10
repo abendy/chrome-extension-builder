@@ -1,0 +1,51 @@
+{
+  "name": "Highlight",
+  "description": "Highlight the web!",
+  "icons": {
+    "16": "logo.png",
+    "48": "logo.png",
+    "128": "logo.png"
+  },
+  "version": "0.0.1",
+  "author": "Allan Bendy <allan.bendy@gmail.com>",
+  "browser_action": {
+    "default_icon": {
+      "19": "logo.png",
+      "38": "logo.png"
+    },
+    "default_title": "Open toolbar",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "scripts": ["assets/scripts/background.js"],
+    "persistent": true
+  },
+  "options_ui": {
+    "page": "options.html"
+  },
+  "content_scripts": [{
+    // "css": [],
+    "js": ["assets/scripts/content.js"],
+    "run_at": "document_end",
+    "all_frames": false,
+    "matches": [
+      "http://*/*",
+      "https://*/*"
+    ]
+  }],
+  "manifest_version": 2,
+  "offline_enabled": false,
+  "permissions": [
+    "http://*/*",
+    "https://*/*",
+    "activeTab",
+    "cookies",
+    "storage",
+    "tabs",
+    "webNavigation",
+    "unlimitedStorage"
+  ],
+  "web_accessible_resources": [
+    "assets/img/*"
+  ]
+}
