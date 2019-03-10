@@ -31,8 +31,6 @@ chrome.browserAction.onClicked.addListener((tab) => {
   });
 });
 
-console.log('background loaded...');
-
 ext.runtime.onMessage.addListener(
   (request, sender, sendResponse) => {
     if (request.action === 'perform-save') {

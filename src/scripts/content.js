@@ -16,8 +16,6 @@ const messageHandler = (message, from, sender, sendResponse) => {
 
 messenger.initConnection('main', messageHandler);
 
-console.log('content loaded...');
-
 const extractTags = () => {
   const data = {};
 

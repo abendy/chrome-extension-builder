@@ -1,7 +1,5 @@
 import storage from './storage';
 
-console.log('options loaded...');
-
 const colorSelectors = document.querySelectorAll('.js-radio');
 
 const setColor = (color) => {
