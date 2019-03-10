@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader');
+const WebpackNotifierPlugin = require('webpack-notifier');
 
 const { NODE_ENV = 'development' } = process.env;
 
@@ -68,6 +69,7 @@ const production = {
       minimize: true,
       debug: false,
     }),
+    new WebpackNotifierPlugin({ excludeWarnings: true }),
   ],
 };
 
