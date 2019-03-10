@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader');
 const WebpackNotifierPlugin = require('webpack-notifier');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const { NODE_ENV = 'development' } = process.env;
 
@@ -29,9 +30,13 @@ const base = {
       use: 'babel-loader',
     },
     {
-      test: /\.scss$/,
+      test: /\.(sa|sc|c)ss$/,
       exclude: /node_modules/,
-      use: ['style-loader', 'css-loader', 'sass-loader'],
+      use: [
+        (NODE_ENV === 'development' ? MiniCssExtractPlugin.loader : 'style-loader'),
+        'css-loader',
+        'sass-loader',
+      ],
     }],
   },
 };
@@ -54,6 +59,9 @@ const development = {
         popup: 'popup',
         options: 'options',
       },
+    }),
+    new MiniCssExtractPlugin({
+      filename: '../styles/[name].css',
     }),
   ],
 };
