@@ -22,43 +22,6 @@ class PopUp extends Component {
     };
   }
 
-  render() {
-    return (
-      <div id="main"
-        className={ this.state.color }
-      >
-        <h1>Extension</h1>
-
-        <p>Tab {this.state.tabid}</p>
-
-        <div>
-          <h3>{this.state.title}</h3>
-          <p>{this.state.description}</p>
-          <a href='{this.state.url}' target='_blank'>{this.state.url}</a>
-        </div>
-        <div className='action-container'>
-          <button data-bookmark='{this.state.data}' id='save-btn' className='btn btn-primary'>Save</button>
-        </div>
-
-        <p>
-          <a href="#" className="js-options">Options</a>
-        </p>
-      </div>
-    );
-  }
-
-  setBackground() {
-    console.log(storage);
-    storage.get('color', (resp) => {
-      const { color } = resp;
-      if (color) {
-        this.setState({
-          color,
-        });
-      }
-    });
-  }
-
   componentDidMount() {
     const renderBookmark = (data) => {
       this.setState({
@@ -103,6 +66,43 @@ class PopUp extends Component {
     //   e.preventDefault();
     //   ext.tabs.create({ url: ext.extension.getURL('options.html') });
     // });
+  }
+
+  setBackground() {
+    console.log(storage);
+    storage.get('color', (resp) => {
+      const { color } = resp;
+      if (color) {
+        this.setState({
+          color,
+        });
+      }
+    });
+  }
+
+  render() {
+    return (
+      <div id="main"
+        className={this.state.color}
+      >
+        <h1>Extension</h1>
+
+        <p>Tab {this.state.tabid}</p>
+
+        <div>
+          <h3>{this.state.title}</h3>
+          <p>{this.state.description}</p>
+          <a href='{this.state.url}' target='_blank'>{this.state.url}</a>
+        </div>
+        <div className='action-container'>
+          <button data-bookmark='{this.state.data}' id='save-btn' className='btn btn-primary'>Save</button>
+        </div>
+
+        <p>
+          <a href="#" className="js-options">Options</a>
+        </p>
+      </div>
+    );
   }
 }
 

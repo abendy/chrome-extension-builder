@@ -1,6 +1,7 @@
 module.exports = {
   "env": {
     "browser": true,
+    "commonjs": true,
     "es6": true,
     "webextensions": true
   },
@@ -8,13 +9,13 @@ module.exports = {
     "airbnb-base",
     "plugin:react/recommended"
   ],
-  "globals": {
-    "chrome": true
-  },
   "parser": "babel-eslint",
   "parserOptions": {
     "sourceType": "module",
-    "ecmaVersion": 6
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "jsx": true
+    }
   },
   "rules": {
     "indent": [
@@ -39,7 +40,18 @@ module.exports = {
     "no-undef": 2,
     "no-unused-vars": 1,
     "no-case-declarations": 0,
-    // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
-  }
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+    'react/jsx-filename-extension': [
+      'error',
+      { extensions: ['.js', '.jsx'] }
+    ],
+  },
+  "plugins": [
+    "react"
+  ],
+  "settings": {
+    "react": {
+      "version": "detect",
+    },
+  },
 };

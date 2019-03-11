@@ -11,7 +11,7 @@ const base = {
   entry: {
     background: './src/scripts/background.js',
     content: './src/scripts/content.js',
-    popup: './src/scripts/popup.js',
+    popup: './src/scripts/popup.jsx',
     options: './src/scripts/options.js',
   },
   output: {
@@ -26,8 +26,25 @@ const base = {
       exclude: /node_modules/,
       use: [
         'eslint-loader',
-        'babel-loader',
       ],
+    },
+    {
+      test: /\.js$/,
+      loader: 'babel-loader',
+      options: {
+        presets: [
+          '@babel/preset-env',
+        ],
+      },
+    },
+    {
+      test: /\.jsx$/,
+      loader: 'babel-loader',
+      options: {
+        presets: [
+          '@babel/preset-react',
+        ],
+      },
     },
     {
       test: /\.(sa|sc|c)ss$/,

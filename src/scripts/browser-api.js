@@ -27,9 +27,7 @@ function Extension() {
     this[api] = null;
 
     try {
-      // eslint-disable-next-line no-undef
       if (chrome[api]) {
-        // eslint-disable-next-line no-undef
         this[api] = chrome[api];
       }
     // eslint-disable-next-line no-empty
