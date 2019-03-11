@@ -1,83 +1,109 @@
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import Messenger from 'ext-messenger';
 import ext from './browser-api';
 import storage from './storage';
 import '../styles/popup.scss';
 
-/* messenger */
+class PopUp extends Component {
+  constructor(props) {
+    super(props);
 
-const messenger = new Messenger();
+    const messenger = new Messenger();
 
-const connection = messenger.initConnection('main');
+    this.connection = messenger.initConnection('main');
 
-ext.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-  const activeTab = tabs[0];
-
-  connection.sendMessage(`content_script:main:${activeTab.id}`, {
-    message: 'popup open',
-    activeTab,
-  });
-});
-
-/* app */
-
-const popup = document.getElementById('app');
-storage.get('color', (resp) => {
-  const { color } = resp;
-  if (color) {
-    popup.style.backgroundColor = color;
+    this.state = {
+      tabId: 0,
+      title: '',
+      description: '',
+      url: '',
+      color: 'white',
+    };
   }
-});
 
-const template = (data) => {
-  const json = JSON.stringify(data);
-  return (`
-  <div class='site-description'>
-    <h3 class='title'>${data.title}</h3>
-    <p class='description'>${data.description}</p>
-    <a href='${data.url}' target='_blank' class='url'>${data.url}</a>
-  </div>
-  <div class='action-container'>
-    <button data-bookmark='${json}' id='save-btn' class='btn btn-primary'>Save</button>
-  </div>
-  `);
-};
+  render() {
+    return (
+      <div id="main"
+        className={ this.state.color }
+      >
+        <h1>Extension</h1>
 
-const renderMessage = (message) => {
-  const displayContainer = document.getElementById('display-container');
-  displayContainer.innerHTML = `<p class='message'>${message}</p>`;
-};
+        <p>Tab {this.state.tabid}</p>
 
-const renderBookmark = (data) => {
-  const displayContainer = document.getElementById('display-container');
-  if (data) {
-    const tmpl = template(data);
-    displayContainer.innerHTML = tmpl;
-  } else {
-    renderMessage('Sorry, could not extract this page\'s title and URL');
+        <div>
+          <h3>{this.state.title}</h3>
+          <p>{this.state.description}</p>
+          <a href='{this.state.url}' target='_blank'>{this.state.url}</a>
+        </div>
+        <div className='action-container'>
+          <button data-bookmark='{this.state.data}' id='save-btn' className='btn btn-primary'>Save</button>
+        </div>
+
+        <p>
+          <a href="#" className="js-options">Options</a>
+        </p>
+      </div>
+    );
   }
-};
 
-ext.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-  const activeTab = tabs[0];
-  chrome.tabs.sendMessage(activeTab.id, { action: 'process-page' }, renderBookmark);
-});
-
-popup.addEventListener('click', (e) => {
-  if (e.target && e.target.matches('#save-btn')) {
-    e.preventDefault();
-    const data = e.target.getAttribute('data-bookmark');
-    ext.runtime.sendMessage({ action: 'perform-save', data }, (response) => {
-      if (response && response.action === 'saved') {
-        renderMessage('Your bookmark was saved successfully!');
-      } else {
-        renderMessage('Sorry, there was an error while saving your bookmark.');
+  setBackground() {
+    console.log(storage);
+    storage.get('color', (resp) => {
+      const { color } = resp;
+      if (color) {
+        this.setState({
+          color,
+        });
       }
     });
   }
-});
 
-const optionsLink = document.querySelector('.js-options');
-optionsLink.addEventListener('click', (e) => {
-  e.preventDefault();
-  ext.tabs.create({ url: ext.extension.getURL('options.html') });
-});
+  componentDidMount() {
+    const renderBookmark = (data) => {
+      this.setState({
+        title: data.title,
+        description: data.description,
+        url: data.url,
+      });
+    };
+
+    ext.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const activeTab = tabs[0];
+      const activeTabId = activeTab.id;
+
+      this.setState({
+        tabid: activeTabId,
+      });
+
+      this.connection.sendMessage(`content_script:main:${activeTab.id}`, {
+        action: 'process-page',
+      }).then((response) => {
+        this.setBackground();
+        renderBookmark(response);
+      });
+    });
+
+    // popup.addEventListener('click', (e) => {
+    //   if (e.target && e.target.matches('#save-btn')) {
+    //     e.preventDefault();
+    //     const data = e.target.getAttribute('data-bookmark');
+    //     ext.runtime.sendMessage({ action: 'perform-save', data }, (response) => {
+    //       if (response && response.action === 'saved') {
+    //         renderMessage('Your bookmark was saved successfully!');
+    //       } else {
+    //         renderMessage('Sorry, there was an error while saving your bookmark.');
+    //       }
+    //     });
+    //   }
+    // });
+
+    // const optionsLink = document.querySelector('.js-options');
+    // optionsLink.addEventListener('click', (e) => {
+    //   e.preventDefault();
+    //   ext.tabs.create({ url: ext.extension.getURL('options.html') });
+    // });
+  }
+}
+
+ReactDOM.render(<PopUp />, document.getElementById('root'));
