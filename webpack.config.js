@@ -22,7 +22,7 @@ const base = {
   module: {
     rules: [{
       enforce: 'pre',
-      test: /\.js$/,
+      test: /\.js(x)*$/,
       exclude: /node_modules/,
       use: [
         'eslint-loader',
