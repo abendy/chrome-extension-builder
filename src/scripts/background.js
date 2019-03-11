@@ -1,11 +1,12 @@
 import Messenger from 'ext-messenger';
-import ext from './browser-api';
 
 /* messenger */
 
 const messenger = new Messenger();
 
+// eslint-disable-next-line no-unused-vars
 const connectedHandler = (extPart, name, tabId) => {};
+// eslint-disable-next-line no-unused-vars
 const disconnectedHandler = (extPart, name, tabId) => {};
 
 messenger.initBackgroundHub({
