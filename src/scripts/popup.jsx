@@ -14,6 +14,7 @@ class PopUp extends Component {
     this.connection = messenger.initConnection('main');
 
     this.state = {
+      loading: true,
       tabId: 0,
       title: '',
       description: '',
@@ -25,6 +26,7 @@ class PopUp extends Component {
   componentDidMount() {
     const renderBookmark = (data) => {
       this.setState({
+        loading: false,
         title: data.title,
         description: data.description,
         url: data.url,
@@ -86,6 +88,10 @@ class PopUp extends Component {
         className={this.state.color}
       >
         <h1>Extension</h1>
+
+        {this.state.loading
+          && <p>Loading...</p>
+        }
 
         <p>Tab {this.state.tabid}</p>
 
