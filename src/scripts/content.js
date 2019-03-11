@@ -1,23 +1,8 @@
 import Messenger from 'ext-messenger';
-import ext from './browser-api';
-
-/* messenger */
-
-const messenger = new Messenger();
-
-const messageHandler = (message, from, sender, sendResponse) => {
-  console.log('from:', from, message);
-
-  if (from === 'background:main') {
-    sendResponse(`tab ${message.tab.id} updated`);
-  }
-};
-
-messenger.initConnection('main', messageHandler);
 
 /* app */
 
-const extractTags = () => {
+const extractedTags = () => {
   const data = {};
 
   data.url = document.location.href;
@@ -31,10 +16,20 @@ const extractTags = () => {
   return data;
 };
 
-function onRequest(request, sender, sendResponse) {
-  if (request.action === 'process-page') {
-    sendResponse(extractTags());
-  }
-}
+/* messenger */
 
-ext.runtime.onMessage.addListener(onRequest);
+const messenger = new Messenger();
+
+const messageHandler = (message, from, sender, sendResponse) => {
+  console.log('from:', from, message);
+
+  if (message.action === 'tab-updated') {
+    sendResponse(`tab ${message.tab.id} updated`);
+  }
+
+  if (message.action === 'process-page') {
+    sendResponse(extractedTags());
+  }
+};
+
+messenger.initConnection('main', messageHandler);
