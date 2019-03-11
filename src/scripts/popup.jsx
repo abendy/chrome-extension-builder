@@ -49,25 +49,11 @@ class PopUp extends Component {
       });
     });
 
-    // popup.addEventListener('click', (e) => {
-    //   if (e.target && e.target.matches('#save-btn')) {
-    //     e.preventDefault();
-    //     const data = e.target.getAttribute('data-bookmark');
-    //     ext.runtime.sendMessage({ action: 'perform-save', data }, (response) => {
-    //       if (response && response.action === 'saved') {
-    //         renderMessage('Your bookmark was saved successfully!');
-    //       } else {
-    //         renderMessage('Sorry, there was an error while saving your bookmark.');
-    //       }
-    //     });
-    //   }
-    // });
-
-    // const optionsLink = document.querySelector('.js-options');
-    // optionsLink.addEventListener('click', (e) => {
-    //   e.preventDefault();
-    //   ext.tabs.create({ url: ext.extension.getURL('options.html') });
-    // });
+    const optionsLink = document.querySelector('.js-options');
+    optionsLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      ext.tabs.create({ url: ext.extension.getURL('options.html') });
+    });
   }
 
   setBackground() {
@@ -99,9 +85,6 @@ class PopUp extends Component {
           <h3>{this.state.title}</h3>
           <p>{this.state.description}</p>
           <a href='{this.state.url}' target='_blank'>{this.state.url}</a>
-        </div>
-        <div className='action-container'>
-          <button data-bookmark='{this.state.data}' id='save-btn' className='btn btn-primary'>Save</button>
         </div>
 
         <p>
