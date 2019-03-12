@@ -12,7 +12,7 @@ const base = {
     background: './src/scripts/background.js',
     content: './src/scripts/content.js',
     popup: './src/scripts/popup.jsx',
-    options: './src/scripts/options.js',
+    options: './src/scripts/options.jsx',
   },
   output: {
     path: path.join(__dirname, 'build/assets/scripts/'),

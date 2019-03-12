@@ -1,0 +1,36 @@
+// Mixins
+
+// Reset List
+
+@mixin reset-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+// Hovers
+
+@mixin hover {
+
+  &:hover,
+  &:active,
+  &:focus {
+    @content;
+  }
+}
+
+// Clearfix
+
+@mixin clearfix {
+  *zoom: 1;
+
+  &:before,
+  &:after {
+    content: '';
+    display: table;
+  }
+
+  &:after {
+    clear: both;
+  }
+}
