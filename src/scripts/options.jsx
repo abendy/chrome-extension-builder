@@ -60,9 +60,9 @@ class Options extends Component {
         <section className="content">
           <h5>Popup color</h5>
           <div className="radio-group">
-            <label><input className="js-radio white" type="radio" name="radio" value="white">White</input></label>
-            <label><input className="js-radio beige" type="radio" name="radio" value="beige">Beige</input></label>
-            <label><input className="js-radio lavender" type="radio" name="radio" value="lavender">Lavender</input></label>
+            <label><input className="js-radio white" type="radio" name="radio" value="white" />White</label>
+            <label><input className="js-radio beige" type="radio" name="radio" value="beige" />Beige</label>
+            <label><input className="js-radio lavender" type="radio" name="radio" value="lavender" />Lavender</label>
           </div>
         </section>
       </div>
