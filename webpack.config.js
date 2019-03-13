@@ -35,8 +35,10 @@ const base = {
     },
     {
       test: /\.js$/,
+      exclude: /node_modules/,
       loader: 'babel-loader',
       options: {
+        cacheDirectory: true,
         presets: [
           '@babel/preset-env',
         ],
@@ -44,8 +46,10 @@ const base = {
     },
     {
       test: /\.jsx$/,
+      exclude: /node_modules/,
       loader: 'babel-loader',
       options: {
+        cacheDirectory: true,
         presets: [
           '@babel/preset-react',
         ],
