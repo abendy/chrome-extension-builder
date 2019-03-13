@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import storage from './storage';
-import '../styles/options.scss';
 
 class Radios extends Component {
   constructor(props) {

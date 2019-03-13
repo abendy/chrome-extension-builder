@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import Messenger from 'ext-messenger';
 import ext from './browser-api';
 import storage from './storage';
-import '../styles/popup.scss';
 
 class PopUp extends Component {
   constructor(props) {

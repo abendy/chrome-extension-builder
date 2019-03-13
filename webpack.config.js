@@ -11,8 +11,14 @@ const base = {
   entry: {
     background: './src/scripts/background.js',
     content: './src/scripts/content.js',
-    popup: './src/scripts/popup.jsx',
-    options: './src/scripts/options.jsx',
+    popup: [
+      './src/scripts/popup.jsx',
+      './src/styles/popup.scss',
+    ],
+    options: [
+      './src/scripts/options.jsx',
+      './src/styles/options.scss',
+    ],
   },
   output: {
     path: path.join(__dirname, 'build/assets/scripts/'),
