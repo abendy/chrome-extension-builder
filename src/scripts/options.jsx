@@ -3,6 +3,61 @@ import ReactDOM from 'react-dom';
 import storage from './storage';
 import '../styles/options.scss';
 
+class Radios extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleClick = this.handleClick.bind(this);
+
+    this.state = {
+      colors: [
+        'white',
+        'lavender',
+        'beige',
+      ],
+      activeColor: 'white',
+    };
+
+    storage.get('color', (resp) => {
+      const { color } = resp;
+      this.setColor(color);
+    });
+  }
+
+  setColor = (color) => {
+    const option = document.querySelector(`.js-radio.${color}`);
+    option.setAttribute('checked', 'checked');
+
+    const popup = document.getElementById('main');
+    popup.style.backgroundColor = color;
+  }
+
+  handleClick(color) {
+    storage.set({ color }, () => {
+      this.setState({
+        activeColor: color,
+      });
+      this.setColor(color);
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        {this.state.colors.map((color, index) => <label key={index}>
+          <input
+            className={`js-radio ${color}`}
+            onClick={() => this.handleClick(`${color}`)}
+            type='radio'
+            name='radio'
+            value={color}
+          />{color}
+        </label>)}
+      </div>
+    );
+  }
+}
+
 class Options extends Component {
   constructor(props) {
     super(props);
@@ -16,39 +71,13 @@ class Options extends Component {
     this.setState({
       loading: false,
     });
-
-    const colorSelectors = document.querySelectorAll('.js-radio');
-
-    const setColor = (color) => {
-      document.body.style.backgroundColor = color;
-    };
-
-    storage.get('color', (resp) => {
-      const { color } = resp;
-      let option;
-      if (color) {
-        option = document.querySelector(`.js-radio.${color}`);
-        setColor(color);
-      } else {
-        [option] = colorSelectors;
-      }
-
-      option.setAttribute('checked', 'checked');
-    });
-
-    colorSelectors.forEach((el) => {
-      el.addEventListener('click', () => {
-        const { value } = el;
-        storage.set({ color: value }, () => {
-          setColor(value);
-        });
-      });
-    });
   }
 
   render() {
+    const { activeColor } = this.state;
+
     return (
-      <div id="main"
+      <div id='main'
         className={this.state.color}
       >
         <h1>Extension</h1>
@@ -57,12 +86,10 @@ class Options extends Component {
           && <p>Loading...</p>
         }
 
-        <section className="content">
+        <section className='content'>
           <h5>Popup color</h5>
-          <div className="radio-group">
-            <label><input className="js-radio white" type="radio" name="radio" value="white" />White</label>
-            <label><input className="js-radio beige" type="radio" name="radio" value="beige" />Beige</label>
-            <label><input className="js-radio lavender" type="radio" name="radio" value="lavender" />Lavender</label>
+          <div className='radio-group'>
+            <Radios activeColor={activeColor} />
           </div>
         </section>
       </div>
