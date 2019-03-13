@@ -1,3 +1,1 @@
-import ext from './browser-api';
-
-export default (ext.storage.sync ? ext.storage.sync : ext.storage.local);
+export default (chrome.storage.sync ? chrome.storage.sync : chrome.storage.local);

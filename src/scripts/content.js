@@ -8,7 +8,7 @@ const extractedTags = () => {
   data.url = document.location.href;
   data.title = document.title;
 
-  const descriptionTag = document.querySelector('meta[property=\'og:description\']') || document.querySelector('meta[name=\'description\']');
+  const descriptionTag = document.querySelector('meta[name=\'description\']');
   if (descriptionTag) {
     data.description = descriptionTag.getAttribute('content');
   }

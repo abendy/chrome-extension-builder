@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Messenger from 'ext-messenger';
-import ext from './browser-api';
 import storage from './storage';
 
 class PopUp extends Component {
@@ -32,7 +31,7 @@ class PopUp extends Component {
       });
     };
 
-    ext.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const activeTab = tabs[0];
       const activeTabId = activeTab.id;
 
@@ -51,12 +50,11 @@ class PopUp extends Component {
     const optionsLink = document.querySelector('.js-options');
     optionsLink.addEventListener('click', (e) => {
       e.preventDefault();
-      ext.tabs.create({ url: ext.extension.getURL('options.html') });
+      chrome.tabs.create({ url: chrome.extension.getURL('options.html') });
     });
   }
 
   setBackground() {
-    console.log(storage);
     storage.get('color', (resp) => {
       const { color } = resp;
       if (color) {
@@ -86,7 +84,10 @@ class PopUp extends Component {
         <div>
           <h3>{this.state.title}</h3>
           <p>{this.state.description}</p>
-          <a href='{this.state.url}' target='_blank'>{this.state.url}</a>
+          <a
+            href={this.state.url}
+            target='_blank' rel='noopener noreferrer'
+          >{this.state.url}</a>
         </div>
 
         <p>
