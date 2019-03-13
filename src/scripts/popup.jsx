@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { messenger, storage, activeTab } from './browser-api';
+import {
+  messenger, getURL, storage, activeTab, newTab,
+} from './utils/browser-api';
 
 class PopUp extends Component {
   constructor(props) {
@@ -46,7 +48,7 @@ class PopUp extends Component {
     const optionsLink = document.querySelector('.js-options');
     optionsLink.addEventListener('click', (e) => {
       e.preventDefault();
-      chrome.tabs.create({ url: chrome.extension.getURL('options.html') });
+      newTab(getURL('options.html'));
     });
   }
 

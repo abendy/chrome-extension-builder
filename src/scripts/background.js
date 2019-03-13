@@ -1,4 +1,4 @@
-import { messenger, updatedTab } from './browser-api';
+import { messenger, updatedTab } from './utils/browser-api';
 
 /* messenger */
 

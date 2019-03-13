@@ -1,8 +1,12 @@
 import Messenger from 'ext-messenger';
 
+/* messenger */
+
 const messenger = new Messenger();
 
-const host = `http://${document.domain}`;
+/* native stuff */
+
+const getURL = file => chrome.extension.getURL(file);
 
 const storage = (chrome.storage.sync ? chrome.storage.sync : chrome.storage.local);
 
@@ -14,7 +18,7 @@ const listen = (callback) => {
   chrome.runtime.onMessage.addListener(callback);
 };
 
-const sendRequest = (extId, message, options, callback) => {
+const sendMessage = (extId, message, options, callback) => {
   chrome.runtime.sendMessage(extId, message, options, callback);
 };
 
@@ -26,18 +30,23 @@ const activeTab = (callback) => {
   chrome.tabs.query({ active: true, currentWindow: true }, callback);
 };
 
+const newTab = (location) => {
+  chrome.tabs.create({ url: location });
+};
+
 const updatedTab = (callback) => {
   chrome.tabs.onUpdated.addListener(callback);
 };
 
 export {
   messenger,
-  host,
+  getURL,
   storage,
   button,
   listen,
-  sendRequest,
+  sendMessage,
   sendTabRequest,
   activeTab,
+  newTab,
   updatedTab,
 };

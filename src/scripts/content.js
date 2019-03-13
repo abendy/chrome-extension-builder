@@ -1,4 +1,4 @@
-import { messenger } from './browser-api';
+import { messenger } from './utils/browser-api';
 
 /* app */
 
