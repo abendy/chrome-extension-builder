@@ -1,8 +1,6 @@
-import Messenger from 'ext-messenger';
+import { messenger, updatedTab } from './browser-api';
 
 /* messenger */
-
-const messenger = new Messenger();
 
 // eslint-disable-next-line no-unused-vars
 const connectedHandler = (extPart, name, tabId) => {};
@@ -16,7 +14,7 @@ messenger.initBackgroundHub({
 
 const connection = messenger.initConnection('main');
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+updatedTab((tabId, changeInfo, tab) => {
   connection.sendMessage(`content_script:main:${tabId}`, {
     action: 'tab-updated',
     tab,

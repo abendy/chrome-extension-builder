@@ -1,4 +1,4 @@
-import Messenger from 'ext-messenger';
+import { messenger } from './browser-api';
 
 /* app */
 
@@ -17,8 +17,6 @@ const extractedTags = () => {
 };
 
 /* messenger */
-
-const messenger = new Messenger();
 
 const messageHandler = (message, from, sender, sendResponse) => {
   console.log('from:', from, message);

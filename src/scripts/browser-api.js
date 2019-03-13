@@ -1,45 +1,43 @@
-const apis = [
-  'alarms',
-  'bookmarks',
-  'browserAction',
-  'commands',
-  'contextMenus',
-  'cookies',
-  'downloads',
-  'events',
-  'extension',
-  'extensionTypes',
-  'history',
-  'i18n',
-  'idle',
-  'notifications',
-  'pageAction',
-  'runtime',
-  'storage',
-  'tabs',
-  'webNavigation',
-  'webRequest',
-  'windows',
-];
+import Messenger from 'ext-messenger';
 
-function Extension() {
-  apis.forEach((api) => {
-    this[api] = null;
+const messenger = new Messenger();
 
-    try {
-      if (chrome[api]) {
-        this[api] = chrome[api];
-      }
-    // eslint-disable-next-line no-empty
-    } catch (e) {}
+const host = `http://${document.domain}`;
 
-    try {
-      if (window[api]) {
-        this[api] = window[api];
-      }
-    // eslint-disable-next-line no-empty
-    } catch (e) {}
-  });
-}
+const storage = (chrome.storage.sync ? chrome.storage.sync : chrome.storage.local);
 
-module.exports = new Extension();
+const button = (callback) => {
+  chrome.browserAction.onClicked.addListener(callback);
+};
+
+const listen = (callback) => {
+  chrome.runtime.onMessage.addListener(callback);
+};
+
+const sendRequest = (extId, message, options, callback) => {
+  chrome.runtime.sendMessage(extId, message, options, callback);
+};
+
+const sendTabRequest = (tabId, request, callback) => {
+  chrome.tabs.sendRequest(tabId, request, callback);
+};
+
+const activeTab = (callback) => {
+  chrome.tabs.query({ active: true, currentWindow: true }, callback);
+};
+
+const updatedTab = (callback) => {
+  chrome.tabs.onUpdated.addListener(callback);
+};
+
+export {
+  messenger,
+  host,
+  storage,
+  button,
+  listen,
+  sendRequest,
+  sendTabRequest,
+  activeTab,
+  updatedTab,
+};

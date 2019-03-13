@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import Messenger from 'ext-messenger';
-import storage from './storage';
+import { messenger, storage, activeTab } from './browser-api';
 
 class PopUp extends Component {
   constructor(props) {
     super(props);
-
-    const messenger = new Messenger();
 
     this.connection = messenger.initConnection('main');
 
@@ -31,15 +28,14 @@ class PopUp extends Component {
       });
     };
 
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const activeTab = tabs[0];
-      const activeTabId = activeTab.id;
+    activeTab((tab) => {
+      const activeTabId = tab[0].id;
 
       this.setState({
         tabid: activeTabId,
       });
 
-      this.connection.sendMessage(`content_script:main:${activeTab.id}`, {
+      this.connection.sendMessage(`content_script:main:${activeTabId}`, {
         action: 'process-page',
       }).then((response) => {
         this.setBackground();
