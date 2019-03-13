@@ -74,7 +74,7 @@ const development = {
   ...base,
   mode: 'development',
   watch: true,
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   module: {
     ...base.module,
   },
