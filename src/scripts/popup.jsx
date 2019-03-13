@@ -63,6 +63,9 @@ class PopUp extends Component {
         this.setState({
           color,
         });
+
+        const popup = document.getElementById('main');
+        popup.style.backgroundColor = color;
       }
     });
   }
