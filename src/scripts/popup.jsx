@@ -96,4 +96,4 @@ class PopUp extends Component {
   }
 }
 
-ReactDOM.render(<PopUp />, document.getElementById('root'));
+ReactDOM.render(<PopUp />, document.getElementById('app'));
