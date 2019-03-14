@@ -1,9 +1,10 @@
 const webpack = require('webpack');
 const path = require('path');
+const WebpackShellPlugin = require('webpack-shell-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader');
 const WebpackNotifierPlugin = require('webpack-notifier');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
 
 const { NODE_ENV = 'development' } = process.env;
 
@@ -76,9 +77,18 @@ const development = {
     ...base.module,
   },
   plugins: [
+    new WebpackShellPlugin({
+      onBuildStart: [
+        'rm -fr build/assets/**/*',
+      ],
+    }),
     new CopyPlugin([
-      { from: './src/manifest.json', to: '..' },
-      { from: './src/html', to: '../html' },
+      { from: './src/manifest.json', to: '../..' },
+      {
+        from: './src/**/*.html',
+        to: '../..',
+        flatten: true,
+      },
       { from: './src/images', to: '../images' },
     ]),
     new MiniCssExtractPlugin({

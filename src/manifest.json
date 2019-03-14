@@ -2,26 +2,27 @@
   "name": "Highlight",
   "description": "Highlight the web!",
   "icons": {
-    "16": "images/logo.png",
-    "48": "images/logo.png",
-    "128": "images/logo.png"
+    "16": "assets/images/logo.png",
+    "48": "assets/images/logo.png",
+    "128": "assets/images/logo.png"
   },
   "version": "0.0.1",
   "author": "Allan Bendy <allan.bendy@gmail.com>",
   "browser_action": {
     "default_icon": {
-      "19": "images/logo.png",
-      "38": "images/logo.png"
+      "19": "assets/images/logo.png",
+      "38": "assets/images/logo.png"
     },
     "default_title": "Highlight the web!",
-    "default_popup": "html/popup.html"
+    "default_popup": "popup.html"
   },
   "background": {
     "scripts": ["assets/scripts/background.js"],
     "persistent": true
   },
   "options_ui": {
-    "page": "html/options.html"
+    "page": "options.html",
+    "open_in_tab": false
   },
   "content_scripts": [{
     "js": ["assets/scripts/content.js"],
