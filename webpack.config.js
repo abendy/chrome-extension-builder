@@ -3,7 +3,6 @@ const path = require('path');
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader');
 const WebpackNotifierPlugin = require('webpack-notifier');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const WebpackShellPlugin = require('webpack-shell-plugin');
 
 const { NODE_ENV = 'development' } = process.env;
 
@@ -89,12 +88,6 @@ const development = {
     new MiniCssExtractPlugin({
       filename: '../styles/[name].css',
       chunkFilename: '[id].css',
-    }),
-    new WebpackShellPlugin({
-      onBuildStart: [
-        'rm -f build/assets/scripts/*',
-        'rm -f build/assets/styles/*',
-      ],
     }),
     new WebpackNotifierPlugin({ excludeWarnings: true }),
   ],
