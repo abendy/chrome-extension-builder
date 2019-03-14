@@ -3,6 +3,7 @@ const path = require('path');
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader');
 const WebpackNotifierPlugin = require('webpack-notifier');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const { NODE_ENV = 'development' } = process.env;
 
@@ -75,6 +76,15 @@ const development = {
     ...base.module,
   },
   plugins: [
+    new CopyPlugin([
+      { from: './src/manifest.json', to: '..' },
+      { from: './src/html', to: '../html' },
+      { from: './src/images', to: '../images' },
+    ]),
+    new MiniCssExtractPlugin({
+      filename: '../styles/[name].css',
+      chunkFilename: '[id].css',
+    }),
     new ChromeExtensionReloader({
       port: 9090,
       reloadPage: true,
@@ -84,10 +94,6 @@ const development = {
         popup: 'popup',
         options: 'options',
       },
-    }),
-    new MiniCssExtractPlugin({
-      filename: '../styles/[name].css',
-      chunkFilename: '[id].css',
     }),
     new WebpackNotifierPlugin({ excludeWarnings: true }),
   ],

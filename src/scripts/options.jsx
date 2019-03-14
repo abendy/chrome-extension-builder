@@ -96,4 +96,4 @@ class Options extends Component {
   }
 }
 
-ReactDOM.render(<Options />, document.getElementById('root'));
+ReactDOM.render(<Options />, document.getElementById('app'));
