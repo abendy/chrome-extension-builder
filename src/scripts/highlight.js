@@ -1,41 +1,15 @@
 import rangy from 'rangy-updated';
 import { rangyHighlight as Highlight } from 'rangy-updated/lib/rangy-highlighter';
 import { rangyClassApplier as ClassApplier } from 'rangy-updated/lib/rangy-classapplier';
-import { rangyTextRange as Range } from 'rangy-updated/lib/rangy-textrange';
 import { rangySerializer as Serializer } from 'rangy-updated/lib/rangy-serializer';
 import { rangySelectionsaverestore as Saver } from 'rangy-updated/lib/rangy-selectionsaverestore';
 
-
 if (!rangy.initialized) {
   rangy.init();
-  console.log('rangy', rangy.initialized ? 'init' : 'did not start');
 }
 
-// Highlighter
-const highlighter = rangy.createHighlighter();
-
-highlighter.addClassApplier(rangy.createClassApplier('note', {
-  ignoreWhiteSpace: true,
-  // tagNames: ["span", "a"],
-  elementTagName: 'a',
-  elementProperties: {
-    href: '#',
-    // onclick: () => {
-    //   console.log(highlighter.getRange());
-
-    //   // highlight.unapply();
-    //   // this.highlights.splice(i--, 1);
-
-    //   // const highlight = highlighter.getHighlightForElement(this);
-    //   // console.log(highlight);
-    //   // highlighter.removeHighlights([highlight]);
-    //   return false;
-    // },
-  },
-}));
-
 const createHighlight = (e, throttle = false) => {
-  // Get rangy selection object
+  // Get selection object
   const selection = rangy.getSelection();
 
   // Detect double & triple mouse click
@@ -49,31 +23,26 @@ const createHighlight = (e, throttle = false) => {
     return;
   }
 
-  // Selection string
-  console.log(selection.toString());
-  console.log(selection.inspect());
+  // Highlighter
+  const highlighter = rangy.createHighlighter();
 
-  // Get first range
-  // const range = selection.rangeCount ? selection.getRangeAt(0) : null;
-  // console.log(range);
+  highlighter.addClassApplier(rangy.createClassApplier('note', {
+    ignoreWhiteSpace: true,
+    elementTagName: 'span',
+    elementProperties: {
+      title: 'Unhighlight me',
+      onclick() {
+        const highlight = highlighter.getHighlightForElement(this);
+        highlighter.removeHighlights([highlight]);
+        console.log(`Removed ${highlight.id}`);
+        return false;
+      },
+    },
+  }));
 
-  const highlight = highlighter.highlightSelection('note');
-  console.log(highlight);
+  highlighter.highlightSelection('note');
 
-  // const highlight = highlighter.getHighlightForElement(this);
-  // console.log(highlight);
-
-  // highlighter.highlights.forEach((highlight) => {
-  //   console.log(highlight);
-  // });
-
-  // // remove note
-  // [].forEach.call(document.querySelectorAll('.note'), (el) => {
-  //   el.addEventListener('click', () => {
-  //     console.log('hi');
-  //     highlighter.unhighlightSelection();
-  //   });
-  // });
+  selection.collapseToEnd();
 };
 
 export default createHighlight;
