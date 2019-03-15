@@ -54,4 +54,11 @@ module.exports = {
       "version": "detect",
     },
   },
+  "globals": {
+    "Highlight": true,
+    "ClassApplier": true,
+    "Range": true,
+    "Serializer": true,
+    "Saver": true,
+  },
 };

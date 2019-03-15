@@ -1,4 +1,12 @@
 import { messenger } from './utils/browser-api';
+import createHighlight from './highlight';
+
+/* highlighter */
+
+// mouse up event
+document.addEventListener('mouseup', (e) => {
+  createHighlight(e);
+}, false);
 
 /* app */
 
