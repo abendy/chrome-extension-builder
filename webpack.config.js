@@ -11,7 +11,10 @@ const { NODE_ENV = 'development' } = process.env;
 const base = {
   entry: {
     background: './src/scripts/background.js',
-    content: './src/scripts/content.js',
+    content: [
+      './src/scripts/content.js',
+      './src/styles/content.scss',
+    ],
     popup: [
       './src/scripts/popup.jsx',
       './src/styles/popup.scss',
