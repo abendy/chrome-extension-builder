@@ -13,31 +13,43 @@ if (!rangy.initialized) {
 const highlighter = rangy.createHighlighter();
 const deserializeRegex = /^([^,]+),([^,{]+)(\{([^}]+)\})?$/;
 
-const removeHighlight = (highlight, el, tempId) => {
+const removeHighlight = (range, el, tempId) => {
   el.classList.remove('highlight');
-  highlighter.removeHighlights(highlight);
-  Cookies.remove(`highlight_${tempId}`);
-
-  console.log('Removed highlight', highlight);
+  const classApplier = rangy.createClassApplier(tempId);
+  classApplier.undoToRange(range);
+  Cookies.remove(tempId);
 };
 
-const doHighlight = (selection, tempId) => {
+const doHighlight = (selection, range, tempId) => {
   const classApplier = rangy.createClassApplier(tempId);
   highlighter.addClassApplier(classApplier, true);
   highlighter.highlightSelection(tempId, selection);
 
-  const highlight = highlighter.highlights[highlighter.highlights.length - 1];
+  try {
+    rangy.isRangeValid(range);
+  } catch (e) {
+    // eslint-disable-next-line no-param-reassign
+    range = selection.rangeCount ? selection.getRangeAt(0) : null;
+  }
+
+  classApplier.applyToRange(range);
+
   // eslint-disable-next-line max-len
   const highlightElements = highlighter.highlights[highlighter.highlights.length - 1].getHighlightElements();
 
   highlightElements.forEach((el) => {
     // Add .hightlight class
     el.classList.add('highlight');
-
-    el.addEventListener('click', () => {
-      removeHighlight([highlight], el, tempId);
-    });
   });
+
+  const lastEl = highlightElements[highlightElements.length - 1];
+  const remove = document.createElement('span');
+  remove.className = 'remove';
+  remove.textContent = 'remove';
+  lastEl.addEventListener('click', () => {
+    removeHighlight(range, lastEl, tempId);
+  });
+  lastEl.append(remove);
 };
 
 function deserializePosition(serialized, rootNode, doc) {
@@ -91,12 +103,13 @@ const restoreHighlight = () => {
     const cookies = Cookies.get();
 
     Object.keys(cookies).forEach((key) => {
-      const [, tempId] = /^highlight_([A-Za-z0-9]+)$/.exec(key);
+      const [, tempId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
 
       const selection = deserializeSelection(cookies[key]);
+      const range = selection.rangeCount ? selection.getRangeAt(0) : null;
 
       // Highlighter
-      doHighlight(selection, tempId);
+      doHighlight(selection, range, tempId);
 
       // Deselect
       selection.collapseToEnd();
@@ -147,7 +160,7 @@ const createHighlight = (e, throttle = false) => {
   Cookies.set(tempId, serializedRanges);
 
   // Highlighter
-  doHighlight(selection, tempId);
+  doHighlight(selection, range, tempId);
 
   // Deselect
   selection.collapseToEnd();
