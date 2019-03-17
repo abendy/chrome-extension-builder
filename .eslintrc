@@ -1,4 +1,4 @@
-module.exports = {
+{
   "env": {
     "browser": true,
     "commonjs": true,
@@ -36,22 +36,29 @@ module.exports = {
     ],
     "no-bitwise": 2,
     "no-console": 0,
+    "no-multiple-empty-lines": 1,
     "no-use-before-define": 2,
     "no-undef": 2,
     "no-unused-vars": 1,
     "no-case-declarations": 0,
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    'react/jsx-filename-extension': [
-      'error',
-      { extensions: ['.js', '.jsx'] }
-    ],
+    "react/jsx-filename-extension": [
+      "error",
+      { "extensions": [".js", ".jsx"] }
+    ]
   },
   "plugins": [
     "react"
   ],
   "settings": {
     "react": {
-      "version": "detect",
-    },
+      "version": "detect"
+    }
   },
-};
+  "globals": {
+    "Highlight": "readonly",
+    "ClassApplier": "readonly",
+    "Range": "readonly",
+    "Serializer": "readonly",
+    "Saver": "readonly"
+  }
+}

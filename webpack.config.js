@@ -30,9 +30,10 @@ const base = {
       enforce: 'pre',
       test: /\.js(x)*$/,
       exclude: /node_modules/,
-      use: [
-        'eslint-loader',
-      ],
+      loader: 'eslint-loader',
+      options: {
+        'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+      },
     },
     {
       test: /\.js$/,
