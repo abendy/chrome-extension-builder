@@ -13,10 +13,18 @@ if (!rangy.initialized) {
 const highlighter = rangy.createHighlighter();
 const deserializeRegex = /^([^,]+),([^,{]+)(\{([^}]+)\})?$/;
 
-const removeHighlight = (range, el, tempId) => {
-  el.classList.remove('highlight');
+const removeHighlight = (highlightElements, range, el, tempId) => {
+  highlightElements.forEach((highlightEl) => {
+    // Remove .hightlight class
+    highlightEl.classList.remove('highlight');
+  });
+
+  // Remove .remove el
+  el.removeChild(el.lastElementChild);
+
   const classApplier = rangy.createClassApplier(tempId);
   classApplier.undoToRange(range);
+
   Cookies.remove(tempId);
 };
 
@@ -47,7 +55,7 @@ const doHighlight = (selection, range, tempId) => {
   remove.className = 'remove';
   remove.textContent = 'remove';
   lastEl.addEventListener('click', () => {
-    removeHighlight(range, lastEl, tempId);
+    removeHighlight(highlightElements, range, lastEl, tempId);
   });
   lastEl.append(remove);
 };
