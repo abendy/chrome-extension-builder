@@ -25,22 +25,21 @@ const createHighlight = (e, throttle = false) => {
 
   // Highlighter
   const highlighter = rangy.createHighlighter();
+  const classApplier = rangy.createClassApplier('highlight');
+  highlighter.addClassApplier(classApplier);
+  highlighter.highlightSelection('highlight', selection);
 
-  highlighter.addClassApplier(rangy.createClassApplier('note', {
-    ignoreWhiteSpace: true,
-    elementTagName: 'span',
-    elementProperties: {
-      title: 'Unhighlight me',
-      onclick() {
-        const highlight = highlighter.getHighlightForElement(this);
-        highlighter.removeHighlights([highlight]);
-        console.log(`Removed ${highlight.id}`);
-        return false;
-      },
-    },
-  }));
+  const highlight = highlighter.highlights[highlighter.highlights.length - 1];
+  // eslint-disable-next-line max-len
+  const highlightElements = highlighter.highlights[highlighter.highlights.length - 1].getHighlightElements();
 
-  highlighter.highlightSelection('note');
+  highlightElements.forEach((el) => {
+    el.addEventListener('click', () => {
+      highlighter.removeHighlights([highlight]);
+      console.log(`Removed ${highlight.id}`);
+    });
+  });
+  // Deselect
 
   selection.collapseToEnd();
 };
