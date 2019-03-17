@@ -7,5 +7,15 @@ h1,h2,h3,h4,h5,h6,address,article,blockquote,dd,dl,dt,figcaption,li,ol,ul,pre,p,
 
 .highlight {
   background-color: skyblue;
+  cursor: auto;
+}
+
+.remove {
+  background-color: lightcoral;
   cursor: url('../../build/assets/images/cursor/baseline-delete-black-18/1x/baseline_delete_black_18dp.png'), auto;
+  padding: 0 .6rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
