@@ -1,4 +1,11 @@
-.note {
-  background-color: lightgreen;
-  cursor: pointer;
+// Main extension (content)
+
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Element
+h1,h2,h3,h4,h5,h6,address,article,blockquote,dd,dl,dt,figcaption,li,ol,ul,pre,p,abbr,cite,code,dfn,em,i,q,s,small,span,strong,sub,sup,u {
+  cursor: url('../../build/assets/images/cursor/baseline-brush-black-18/1x/baseline_brush_black_18dp.png'), auto;
+}
+
+.highlight {
+  background-color: skyblue;
+  cursor: url('../../build/assets/images/cursor/baseline-delete-black-18/1x/baseline_delete_black_18dp.png'), auto;
 }
