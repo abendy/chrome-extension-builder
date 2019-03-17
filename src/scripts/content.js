@@ -30,7 +30,7 @@ const messageHandler = (message, from, sender, sendResponse) => {
   console.log('from:', from, message);
 
   if (message.action === 'tab-updated') {
-    sendResponse(`tab ${message.tab.id} updated`);
+    sendResponse(`tab ${message.tab.id} updated: ${message.tab.title}`);
   }
 
   if (message.action === 'process-page') {
