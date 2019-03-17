@@ -11,27 +11,31 @@ if (!rangy.initialized) {
 }
 
 const highlighter = rangy.createHighlighter();
-const cookieName = 'rangySerializedSelection';
 const deserializeRegex = /^([^,]+),([^,{]+)(\{([^}]+)\})?$/;
 
-const removeHighlight = (el) => {
-  highlighter.removeHighlights(el);
-  storage.remove(cookieName);
-  console.log('Removed highlight', el);
+const removeHighlight = (highlight, el, tempId) => {
+  el.classList.remove('highlight');
+  highlighter.removeHighlights(highlight);
+  Cookies.remove(`highlight_${tempId}`);
+
+  console.log('Removed highlight', highlight);
 };
 
-const doHighlight = (selection) => {
-  const classApplier = rangy.createClassApplier('highlight');
-  highlighter.addClassApplier(classApplier);
-  highlighter.highlightSelection('highlight', selection);
+const doHighlight = (selection, tempId) => {
+  const classApplier = rangy.createClassApplier(tempId);
+  highlighter.addClassApplier(classApplier, true);
+  highlighter.highlightSelection(tempId, selection);
 
   const highlight = highlighter.highlights[highlighter.highlights.length - 1];
   // eslint-disable-next-line max-len
   const highlightElements = highlighter.highlights[highlighter.highlights.length - 1].getHighlightElements();
 
   highlightElements.forEach((el) => {
+    // Add .hightlight class
+    el.classList.add('highlight');
+
     el.addEventListener('click', () => {
-      removeHighlight([highlight]);
+      removeHighlight([highlight], el, tempId);
     });
   });
 };
@@ -84,15 +88,19 @@ function deserializeSelection(serialized, rootNode, win) {
 
 const restoreHighlight = () => {
   try {
-    const cookieData = Cookies.get(cookieName);
-    console.log(cookieData);
-    const selection = deserializeSelection(cookieData);
+    const cookies = Cookies.get();
 
-    // Highlighter
-    doHighlight(selection);
+    Object.keys(cookies).forEach((key) => {
+      const [, tempId] = /^highlight_([A-Za-z0-9]+)$/.exec(key);
 
-    // Deselect
-    selection.collapseToEnd();
+      const selection = deserializeSelection(cookies[key]);
+
+      // Highlighter
+      doHighlight(selection, tempId);
+
+      // Deselect
+      selection.collapseToEnd();
+    });
   } catch (e) {
     console.log('ERROR', e);
   }
@@ -124,19 +132,22 @@ const createHighlight = (e, throttle = false) => {
   const ranges = selection.getAllRanges();
   const range = selection.rangeCount ? selection.getRangeAt(0) : null;
 
+  // Set temp. ID
+  const tempId = `highlight_${Math.random().toString(36).substring(2, 15)}`;
+
   // Save selection
   let serializedRanges = [];
   // eslint-disable-next-line no-plusplus
   for (let i = 0, len = ranges.length; i < len; ++i) {
-    const rootNode = rangy.DomRange.getRangeDocument(range).documentElement;
+    const rootNode = rangy.DomRange.getRangeDocument(ranges[i]).documentElement;
     const serialized = `${rangy.serializePosition(ranges[i].startContainer, ranges[i].startOffset, rootNode)},${rangy.serializePosition(ranges[i].endContainer, ranges[i].endOffset, rootNode)}`;
     serializedRanges[i] = serialized;
   }
   serializedRanges = serializedRanges.join('|');
-  Cookies.set(cookieName, serializedRanges);
+  Cookies.set(tempId, serializedRanges);
 
   // Highlighter
-  doHighlight(selection);
+  doHighlight(selection, tempId);
 
   // Deselect
   selection.collapseToEnd();
