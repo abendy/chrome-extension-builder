@@ -5,13 +5,13 @@ import { rangySerializer as Serializer } from 'rangy-updated/lib/rangy-serialize
 import { rangySelectionsaverestore as Saver } from 'rangy-updated/lib/rangy-selectionsaverestore';
 import Cookies from 'js-cookie';
 import { storage } from './utils/browser-api';
+import { deserializeSelection } from './utils/highlight-helper';
 
 if (!rangy.initialized) {
   rangy.init();
 }
 
 const highlighter = rangy.createHighlighter();
-const deserializeRegex = /^([^,]+),([^,{]+)(\{([^}]+)\})?$/;
 
 const removeHighlight = (highlightElements, range, el, tempId) => {
   highlightElements.forEach((highlightEl) => {
@@ -59,52 +59,6 @@ const doHighlight = (selection, range, tempId) => {
   });
   lastEl.append(remove);
 };
-
-function deserializePosition(serialized, rootNode, doc) {
-  const parts = serialized.split(':');
-  let node = rootNode;
-  const nodeIndices = parts[0] ? parts[0].split('/') : [];
-  let i = nodeIndices.length;
-
-  // eslint-disable-next-line no-plusplus
-  while (i--) {
-    const nodeIndex = parseInt(nodeIndices[i], 10);
-    if (nodeIndex < node.childNodes.length) {
-      node = node.childNodes[nodeIndex];
-    } else {
-      throw module.createError(`deserializePosition() failed': node ${rangy.dom.inspectNode(node)} has no child with index ${nodeIndex}, ${i}`);
-    }
-  }
-
-  return new rangy.dom.DomPosition(node, parseInt(parts[1], 10));
-}
-
-function deserializeRange(serialized, rootNode, doc) {
-  const result = deserializeRegex.exec(serialized);
-
-  const start = deserializePosition(result[1], rootNode, doc);
-  const end = deserializePosition(result[2], rootNode, doc);
-  const range = rangy.createRange(doc);
-  range.setStartAndEnd(start.node, start.offset, end.node, end.offset);
-  return range;
-}
-
-function deserializeSelection(serialized, rootNode, win) {
-  // eslint-disable-next-line no-param-reassign
-  rootNode = window.document.documentElement;
-
-  const serializedRanges = serialized.split('|');
-  const sel = rangy.getSelection(window);
-  const ranges = [];
-
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0, len = serializedRanges.length; i < len; ++i) {
-    ranges[i] = deserializeRange(serializedRanges[i], rootNode, window.document);
-  }
-  sel.setRanges(ranges);
-
-  return sel;
-}
 
 const restoreHighlight = () => {
   try {
