@@ -77,6 +77,9 @@ class Highlighter {
     // Deselect
     this.selection.collapseToEnd();
 
+    this.selection = null;
+    this.ranges = null;
+    this.range = null;
     this.highlightId = null;
   }
 
