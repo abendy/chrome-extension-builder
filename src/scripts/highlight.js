@@ -4,7 +4,6 @@ import { rangyClassApplier as ClassApplier } from 'rangy-updated/lib/rangy-class
 import { rangySerializer as Serializer } from 'rangy-updated/lib/rangy-serializer';
 import { rangySelectionsaverestore as Saver } from 'rangy-updated/lib/rangy-selectionsaverestore';
 import Cookies from 'js-cookie';
-import { storage } from './utils/browser-api';
 import { deserializeSelection } from './utils/highlight-helper';
 
 if (!rangy.initialized) {
