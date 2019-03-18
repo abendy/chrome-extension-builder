@@ -13,7 +13,6 @@ class Highlighter {
     this.rangy.init();
 
     this.highlighter = this.rangy.createHighlighter();
-    this.classApplier = this.rangy.createClassApplier(this.highlightId);
 
     this.selection = null;
     this.ranges = null;
@@ -47,6 +46,7 @@ class Highlighter {
   }
 
   doHighlight() {
+    // Add highlight
     this.highlighter.highlightSelection(this.highlightId, this.selection);
 
     try {
@@ -55,6 +55,7 @@ class Highlighter {
       this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
     }
 
+    // Set highlight to DOM range in browser
     this.classApplier.applyToRange(this.range);
 
     // eslint-disable-next-line max-len
