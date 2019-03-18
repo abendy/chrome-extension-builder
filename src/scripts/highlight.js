@@ -16,6 +16,7 @@ class Highlighter {
     this.tempId = `highlight_${Math.random().toString(36).substring(2, 15)}`;
 
     this.highlighter = this.rangy.createHighlighter();
+    this.classApplier = this.rangy.createClassApplier(this.tempId);
 
     this.selection = null;
     this.ranges = null;
@@ -31,15 +32,13 @@ class Highlighter {
     // Remove .remove el
     lastEl.removeChild(lastEl.lastElementChild);
 
-    const classApplier = this.rangy.createClassApplier(this.tempId);
-    classApplier.undoToRange(this.range);
+    this.classApplier.undoToRange(this.range);
 
     Cookies.remove(this.tempId);
   }
 
   doHighlight() {
-    const classApplier = this.rangy.createClassApplier(this.tempId);
-    this.highlighter.addClassApplier(classApplier, true);
+    this.highlighter.addClassApplier(this.classApplier, true);
     this.highlighter.highlightSelection(this.tempId, this.selection);
 
     try {
@@ -49,7 +48,7 @@ class Highlighter {
       this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
     }
 
-    classApplier.applyToRange(this.range);
+    this.classApplier.applyToRange(this.range);
 
     // eslint-disable-next-line max-len
     const highlightElements = this.highlighter.highlights[this.highlighter.highlights.length - 1].getHighlightElements();
@@ -82,6 +81,8 @@ class Highlighter {
 
         this.selection = deserializeSelection(cookies[key], this.doc);
         this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
+
+        this.classApplier = this.rangy.createClassApplier(this.tempId);
 
         // Highlighter
         this.doHighlight();
