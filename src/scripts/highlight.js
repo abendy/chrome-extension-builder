@@ -40,6 +40,10 @@ class Highlighter {
 
   doHighlight() {
     this.highlighter.addClassApplier(this.classApplier, true);
+    // Get range objects
+    this.ranges = this.selection.getAllRanges();
+    this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
+
     this.highlighter.highlightSelection(this.highlightId, this.selection);
 
     try {
@@ -88,7 +92,6 @@ class Highlighter {
 
       Object.keys(cookies).forEach((key) => {
         this.selection = deserializeSelection(cookies[key], this.doc);
-        this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
 
         // Set highlight ID
         const [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
@@ -126,10 +129,6 @@ class Highlighter {
     if (this.selection.toString().length === 0 || this.selection.isCollapsed) {
       return;
     }
-
-    // Get range objects
-    this.ranges = this.selection.getAllRanges();
-    this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
 
     // Set highlight ID
     this.setHighlightId();
