@@ -14,9 +14,11 @@ class Highlighter {
     this.highlighter = this.rangy.createHighlighter();
 
     this.selection = null;
+    this.ranges = null;
+    this.range = null;
   }
 
-  removeHighlight(highlightElements, range, el, tempId) {
+  removeHighlight(highlightElements, el, tempId) {
     highlightElements.forEach((highlightEl) => {
       // Remove .hightlight class
       highlightEl.classList.remove('highlight');
@@ -26,24 +28,24 @@ class Highlighter {
     el.removeChild(el.lastElementChild);
 
     const classApplier = this.rangy.createClassApplier(tempId);
-    classApplier.undoToRange(range);
+    classApplier.undoToRange(this.range);
 
     Cookies.remove(tempId);
   }
 
-  doHighlight(range, tempId) {
+  doHighlight(tempId) {
     const classApplier = this.rangy.createClassApplier(tempId);
     this.highlighter.addClassApplier(classApplier, true);
     this.highlighter.highlightSelection(tempId, this.selection);
 
     try {
-      this.rangy.isRangeValid(range);
+      this.rangy.isRangeValid(this.range);
     } catch (e) {
       // eslint-disable-next-line no-param-reassign
-      range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
+      this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
     }
 
-    classApplier.applyToRange(range);
+    classApplier.applyToRange(this.range);
 
     // eslint-disable-next-line max-len
     const highlightElements = this.highlighter.highlights[this.highlighter.highlights.length - 1].getHighlightElements();
@@ -58,7 +60,7 @@ class Highlighter {
     remove.className = 'remove';
     remove.textContent = 'remove';
     lastEl.addEventListener('click', () => {
-      this.removeHighlight(highlightElements, range, lastEl, tempId);
+      this.removeHighlight(highlightElements, lastEl, tempId);
     });
     lastEl.append(remove);
 
@@ -74,10 +76,10 @@ class Highlighter {
         const [, tempId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
 
         this.selection = deserializeSelection(cookies[key], window.document);
-        const range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
+        this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
 
         // Highlighter
-        this.doHighlight(range, tempId);
+        this.doHighlight(tempId);
       });
     } catch (e) {
       console.log('ERROR', e);
@@ -99,8 +101,8 @@ class Highlighter {
     }
 
     // Get range objects
-    const ranges = this.selection.getAllRanges();
-    const range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
+    this.ranges = this.selection.getAllRanges();
+    this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
 
     // Set temp. ID
     const tempId = `highlight_${Math.random().toString(36).substring(2, 15)}`;
@@ -108,16 +110,16 @@ class Highlighter {
     // Save selection
     let serializedRanges = [];
     // eslint-disable-next-line no-plusplus
-    for (let i = 0, len = ranges.length; i < len; ++i) {
-      const rootNode = this.rangy.DomRange.getRangeDocument(ranges[i]).documentElement;
-      const serialized = `${this.rangy.serializePosition(ranges[i].startContainer, ranges[i].startOffset, rootNode)},${this.rangy.serializePosition(ranges[i].endContainer, ranges[i].endOffset, rootNode)}`;
+    for (let i = 0, len = this.ranges.length; i < len; ++i) {
+      const rootNode = this.rangy.DomRange.getRangeDocument(this.ranges[i]).documentElement;
+      const serialized = `${this.rangy.serializePosition(this.ranges[i].startContainer, this.ranges[i].startOffset, rootNode)},${this.rangy.serializePosition(this.ranges[i].endContainer, this.ranges[i].endOffset, rootNode)}`;
       serializedRanges[i] = serialized;
     }
     serializedRanges = serializedRanges.join('|');
     Cookies.set(tempId, serializedRanges);
 
     // Highlighter
-    this.doHighlight(this.selection, range, tempId);
+    this.doHighlight(this.selection, tempId);
   }
 }
 
