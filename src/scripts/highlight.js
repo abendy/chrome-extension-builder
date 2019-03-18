@@ -27,6 +27,7 @@ class Highlighter {
       this.highlightId = `highlight_${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`;
     }
     this.classApplier = this.rangy.createClassApplier(this.highlightId);
+    this.highlighter.addClassApplier(this.classApplier, true);
   }
 
   removeHighlight(lastEl) {
@@ -39,7 +40,6 @@ class Highlighter {
   }
 
   doHighlight() {
-    this.highlighter.addClassApplier(this.classApplier, true);
     // Get range objects
     this.ranges = this.selection.getAllRanges();
     this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
