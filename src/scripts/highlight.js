@@ -13,7 +13,7 @@ class Highlighter {
     this.rangy.init();
 
     // Set temp. ID
-    this.highlightId = `highlight_${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`;
+    this.highlightId = null;
 
     this.highlighter = this.rangy.createHighlighter();
     this.classApplier = this.rangy.createClassApplier(this.highlightId);
@@ -21,6 +21,11 @@ class Highlighter {
     this.selection = null;
     this.ranges = null;
     this.range = null;
+  }
+
+  setHighlightId(reset) {
+    this.highlightId = `highlight_${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`;
+    this.classApplier = this.rangy.createClassApplier(this.highlightId);
   }
 
   removeHighlight(lastEl) {
@@ -92,6 +97,7 @@ class Highlighter {
       serializedRanges[i] = serialized;
     }
     serializedRanges = serializedRanges.join('|');
+    this.setHighlightId();
     Cookies.set(this.highlightId, serializedRanges);
   }
 
