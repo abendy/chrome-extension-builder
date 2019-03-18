@@ -102,12 +102,11 @@ class Highlighter {
 
   saveHighlight() {
     let serializedRanges = [];
-    // eslint-disable-next-line no-plusplus
-    for (let i = 0, len = this.ranges.length; i < len; ++i) {
+    Object.keys(this.ranges).forEach((i) => {
       const rootNode = this.rangy.DomRange.getRangeDocument(this.ranges[i]).documentElement;
       const serialized = `${this.rangy.serializePosition(this.ranges[i].startContainer, this.ranges[i].startOffset, rootNode)},${this.rangy.serializePosition(this.ranges[i].endContainer, this.ranges[i].endOffset, rootNode)}`;
       serializedRanges[i] = serialized;
-    }
+    });
     serializedRanges = serializedRanges.join('|');
     Cookies.set(this.highlightId, serializedRanges);
   }
