@@ -13,7 +13,6 @@ class Highlighter {
     this.rangy.init();
 
     this.highlighter = this.rangy.createHighlighter();
-    this.classApplier = this.rangy.createClassApplier(this.highlightId);
 
     this.selection = null;
     this.ranges = null;
@@ -27,19 +26,27 @@ class Highlighter {
       this.highlightId = `highlight_${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`;
     }
     this.classApplier = this.rangy.createClassApplier(this.highlightId);
+    this.highlighter.addClassApplier(this.classApplier, true);
   }
 
-  removeHighlight(lastEl) {
+  removeHighlight(lastEl, highlightId, range) {
     // Remove .remove element
     lastEl.removeChild(lastEl.lastElementChild);
 
-    this.classApplier.undoToRange(this.range);
+    this.setHighlightId(highlightId);
+    this.classApplier.undoToRange(range);
 
     Cookies.remove(this.highlightId);
   }
 
+  setRanges() {
+    // Get range objects
+    this.ranges = this.selection.getAllRanges();
+    this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
+  }
+
   doHighlight() {
-    this.highlighter.addClassApplier(this.classApplier, true);
+    // Add highlight
     this.highlighter.highlightSelection(this.highlightId, this.selection);
 
     try {
@@ -48,28 +55,34 @@ class Highlighter {
       this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
     }
 
+    // Set highlight to DOM range in browser
     this.classApplier.applyToRange(this.range);
 
     // eslint-disable-next-line max-len
     const highlightElements = this.highlighter.highlights[this.highlighter.highlights.length - 1].getHighlightElements();
 
     const lastEl = highlightElements[highlightElements.length - 1];
+    const { highlightId, range } = this;
 
+    // Set remove button with click event
     const remove = document.createElement('span');
     remove.className = 'remove';
     remove.textContent = 'remove';
     remove.addEventListener('click', () => {
-      this.removeHighlight(lastEl);
+      this.removeHighlight(lastEl, highlightId, range);
     });
     lastEl.append(remove);
 
     // Hover over highlight elements to display remove button
     highlightElements.forEach((el) => {
       el.addEventListener('mouseenter', () => {
-        lastEl.childNodes[lastEl.childNodes.length - 1].classList.add('hover');
+        const lastElChildEl = lastEl.childNodes[lastEl.childNodes.length - 1];
+        if (lastElChildEl.tagName.toLowerCase() === 'span' && lastElChildEl.className.toLowerCase() === 'remove') {
+          lastEl.childNodes[lastEl.childNodes.length - 1].classList.add('active');
+        }
       });
       el.addEventListener('mouseleave', () => {
-        lastEl.childNodes[lastEl.childNodes.length - 1].classList.remove('hover');
+        lastEl.childNodes[lastEl.childNodes.length - 1].classList.remove('active');
       });
     });
 
@@ -87,8 +100,9 @@ class Highlighter {
       const cookies = Cookies.get();
 
       Object.keys(cookies).forEach((key) => {
+        // Get selection object
         this.selection = deserializeSelection(cookies[key], this.doc);
-        this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
+        this.setRanges();
 
         // Set highlight ID
         const [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
@@ -123,13 +137,12 @@ class Highlighter {
 
     // Get selection object
     this.selection = this.rangy.getSelection();
+    this.setRanges();
+
+    // Test selection object
     if (this.selection.toString().length === 0 || this.selection.isCollapsed) {
       return;
     }
-
-    // Get range objects
-    this.ranges = this.selection.getAllRanges();
-    this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
 
     // Set highlight ID
     this.setHighlightId();

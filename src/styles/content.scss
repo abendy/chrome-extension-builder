@@ -6,7 +6,7 @@ h1,h2,h3,h4,h5,h6,address,article,blockquote,dd,dl,dt,figcaption,li,ol,ul,pre,p,
 }
 
 [class^="highlight_"] {
-  background-color: skyblue;
+  background-color: #acdbdf;
   cursor: auto;
   position: relative;
 }
@@ -14,16 +14,17 @@ h1,h2,h3,h4,h5,h6,address,article,blockquote,dd,dl,dt,figcaption,li,ol,ul,pre,p,
 .remove {
   display: none;
 
-  background-color: lightcoral;
+  background-color: #69779b;
   border-radius: .3rem;
   bottom: .25rem;
-  cursor: url('../../build/assets/images/cursor/baseline-delete-black-18/1x/baseline_delete_black_18dp.png'), auto;
-  font-size: 1.3rem;
-  padding: 0 .6rem;
+  color: #f0ece2;
+  cursor: url('../../build/assets/images/cursor/baseline-delete-black-18/2x/baseline_delete_black_18dp.png'), auto;
+  font-size: 1.15rem;
+  padding: 0.1rem .6rem;
   position: absolute;
   right: .25rem;
 
-  &.hover {
+  &.active {
     display: inline;
   }
 
