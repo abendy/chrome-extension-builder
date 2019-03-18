@@ -12,6 +12,8 @@ class Highlighter {
     this.rangy.init();
 
     this.highlighter = this.rangy.createHighlighter();
+
+    this.selection = null;
   }
 
   removeHighlight(highlightElements, range, el, tempId) {
@@ -29,16 +31,16 @@ class Highlighter {
     Cookies.remove(tempId);
   }
 
-  doHighlight(selection, range, tempId) {
+  doHighlight(range, tempId) {
     const classApplier = this.rangy.createClassApplier(tempId);
     this.highlighter.addClassApplier(classApplier, true);
-    this.highlighter.highlightSelection(tempId, selection);
+    this.highlighter.highlightSelection(tempId, this.selection);
 
     try {
       this.rangy.isRangeValid(range);
     } catch (e) {
       // eslint-disable-next-line no-param-reassign
-      range = selection.rangeCount ? selection.getRangeAt(0) : null;
+      range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
     }
 
     classApplier.applyToRange(range);
@@ -68,14 +70,14 @@ class Highlighter {
       Object.keys(cookies).forEach((key) => {
         const [, tempId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
 
-        const selection = deserializeSelection(cookies[key], window.document);
-        const range = selection.rangeCount ? selection.getRangeAt(0) : null;
+        this.selection = deserializeSelection(cookies[key], window.document);
+        const range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
 
         // Highlighter
-        this.doHighlight(selection, range, tempId);
+        this.doHighlight(range, tempId);
 
         // Deselect
-        selection.collapseToEnd();
+        this.selection.collapseToEnd();
       });
     } catch (e) {
       console.log('ERROR', e);
@@ -91,14 +93,14 @@ class Highlighter {
     }
 
     // Get selection object
-    const selection = this.rangy.getSelection();
-    if (selection.toString().length === 0 || selection.isCollapsed) {
+    this.selection = this.rangy.getSelection();
+    if (this.selection.toString().length === 0 || this.selection.isCollapsed) {
       return;
     }
 
     // Get range objects
-    const ranges = selection.getAllRanges();
-    const range = selection.rangeCount ? selection.getRangeAt(0) : null;
+    const ranges = this.selection.getAllRanges();
+    const range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
 
     // Set temp. ID
     const tempId = `highlight_${Math.random().toString(36).substring(2, 15)}`;
@@ -115,10 +117,10 @@ class Highlighter {
     Cookies.set(tempId, serializedRanges);
 
     // Highlighter
-    this.doHighlight(selection, range, tempId);
+    this.doHighlight(this.selection, range, tempId);
 
     // Deselect
-    selection.collapseToEnd();
+    this.selection.collapseToEnd();
   }
 }
 
