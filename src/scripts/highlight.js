@@ -91,7 +91,11 @@ class Highlighter {
       const cookies = Cookies.get();
 
       Object.keys(cookies).forEach((key) => {
+        // Get selection object
         this.selection = deserializeSelection(cookies[key], this.doc);
+        if (this.selection.toString().length === 0 || this.selection.isCollapsed) {
+          return;
+        }
 
         // Set highlight ID
         const [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
