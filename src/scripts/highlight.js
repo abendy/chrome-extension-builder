@@ -12,19 +12,20 @@ class Highlighter {
     this.rangy = rangy;
     this.rangy.init();
 
-    // Set temp. ID
-    this.highlightId = null;
-
     this.highlighter = this.rangy.createHighlighter();
     this.classApplier = this.rangy.createClassApplier(this.highlightId);
 
     this.selection = null;
     this.ranges = null;
     this.range = null;
+    this.highlightId = null;
   }
 
-  setHighlightId(reset) {
-    this.highlightId = `highlight_${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`;
+  setHighlightId(highlightId) {
+    this.highlightId = highlightId;
+    if (!highlightId) {
+      this.highlightId = `highlight_${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`;
+    }
     this.classApplier = this.rangy.createClassApplier(this.highlightId);
   }
 
@@ -75,6 +76,8 @@ class Highlighter {
 
     // Deselect
     this.selection.collapseToEnd();
+
+    this.highlightId = null;
   }
 
   restoreHighlight() {
@@ -82,13 +85,12 @@ class Highlighter {
       const cookies = Cookies.get();
 
       Object.keys(cookies).forEach((key) => {
-        const [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
-        this.highlightId = highlightId;
-
         this.selection = deserializeSelection(cookies[key], this.doc);
         this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
 
-        this.classApplier = this.rangy.createClassApplier(this.highlightId);
+        // Set highlight ID
+        const [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
+        this.setHighlightId(highlightId);
 
         // Highlighter
         this.doHighlight();
@@ -107,7 +109,6 @@ class Highlighter {
       serializedRanges[i] = serialized;
     }
     serializedRanges = serializedRanges.join('|');
-    this.setHighlightId();
     Cookies.set(this.highlightId, serializedRanges);
   }
 
@@ -128,6 +129,9 @@ class Highlighter {
     // Get range objects
     this.ranges = this.selection.getAllRanges();
     this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
+
+    // Set highlight ID
+    this.setHighlightId();
 
     // Save selection
     this.saveHighlight();
