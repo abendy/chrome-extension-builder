@@ -31,9 +31,8 @@ export const deserializeRange = (serialized, rootNode, doc) => {
   return range;
 };
 
-export const deserializeSelection = (serialized, rootNode, doc) => {
-  // eslint-disable-next-line no-param-reassign
-  rootNode = window.document.documentElement;
+export const deserializeSelection = (serialized, doc) => {
+  const rootNode = doc.documentElement;
 
   const serializedRanges = serialized.split('|');
   const sel = rangy.getSelection(window);
