@@ -1,11 +1,19 @@
 import { messenger } from './utils/browser-api';
-import createHighlight from './highlight';
+import highlight from './highlight';
 
 /* highlighter */
 
+if (document.readyState !== 'loading') {
+  highlight.restoreHighlight();
+} else {
+  document.addEventListener('DOMContentLoaded', () => {
+    highlight.restoreHighlight();
+  });
+}
+
 // mouse up event
 document.addEventListener('mouseup', (e) => {
-  createHighlight(e);
+  highlight.createHighlight(e);
 }, false);
 
 /* app */
