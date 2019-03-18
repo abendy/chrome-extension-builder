@@ -24,7 +24,7 @@ class Highlighter {
   }
 
   removeHighlight(lastEl) {
-    // Remove .remove el
+    // Remove .remove element
     lastEl.removeChild(lastEl.lastElementChild);
 
     this.classApplier.undoToRange(this.range);
@@ -53,7 +53,7 @@ class Highlighter {
     const remove = document.createElement('span');
     remove.className = 'remove';
     remove.textContent = 'remove';
-    lastEl.addEventListener('click', () => {
+    remove.addEventListener('click', () => {
       this.removeHighlight(lastEl);
     });
     lastEl.append(remove);
