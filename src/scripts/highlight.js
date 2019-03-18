@@ -13,10 +13,10 @@ class Highlighter {
     this.rangy.init();
 
     // Set temp. ID
-    this.tempId = `highlight_${Math.random().toString(36).substring(2, 15)}`;
+    this.highlightId = `highlight_${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`;
 
     this.highlighter = this.rangy.createHighlighter();
-    this.classApplier = this.rangy.createClassApplier(this.tempId);
+    this.classApplier = this.rangy.createClassApplier(this.highlightId);
 
     this.selection = null;
     this.ranges = null;
@@ -34,12 +34,12 @@ class Highlighter {
 
     this.classApplier.undoToRange(this.range);
 
-    Cookies.remove(this.tempId);
+    Cookies.remove(this.highlightId);
   }
 
   doHighlight() {
     this.highlighter.addClassApplier(this.classApplier, true);
-    this.highlighter.highlightSelection(this.tempId, this.selection);
+    this.highlighter.highlightSelection(this.highlightId, this.selection);
 
     try {
       this.rangy.isRangeValid(this.range);
@@ -76,13 +76,13 @@ class Highlighter {
       const cookies = Cookies.get();
 
       Object.keys(cookies).forEach((key) => {
-        const [, tempId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
-        this.tempId = tempId;
+        const [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
+        this.highlightId = highlightId;
 
         this.selection = deserializeSelection(cookies[key], this.doc);
         this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
 
-        this.classApplier = this.rangy.createClassApplier(this.tempId);
+        this.classApplier = this.rangy.createClassApplier(this.highlightId);
 
         // Highlighter
         this.doHighlight();
@@ -101,7 +101,7 @@ class Highlighter {
       serializedRanges[i] = serialized;
     }
     serializedRanges = serializedRanges.join('|');
-    Cookies.set(this.tempId, serializedRanges);
+    Cookies.set(this.highlightId, serializedRanges);
   }
 
   newHighlight(e, throttle = false) {
