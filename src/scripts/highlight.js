@@ -61,6 +61,9 @@ class Highlighter {
       this.removeHighlight(highlightElements, range, lastEl, tempId);
     });
     lastEl.append(remove);
+
+    // Deselect
+    this.selection.collapseToEnd();
   }
 
   restoreHighlight() {
@@ -75,9 +78,6 @@ class Highlighter {
 
         // Highlighter
         this.doHighlight(range, tempId);
-
-        // Deselect
-        this.selection.collapseToEnd();
       });
     } catch (e) {
       console.log('ERROR', e);
@@ -118,9 +118,6 @@ class Highlighter {
 
     // Highlighter
     this.doHighlight(this.selection, range, tempId);
-
-    // Deselect
-    this.selection.collapseToEnd();
   }
 }
 
