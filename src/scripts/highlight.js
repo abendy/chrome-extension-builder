@@ -8,6 +8,7 @@ import { deserializeSelection } from './utils/highlight-helper';
 
 class Highlighter {
   constructor() {
+    this.doc = window.document;
     this.rangy = rangy;
     this.rangy.init();
 
@@ -79,7 +80,7 @@ class Highlighter {
         const [, tempId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
         this.tempId = tempId;
 
-        this.selection = deserializeSelection(cookies[key], window.document);
+        this.selection = deserializeSelection(cookies[key], this.doc);
         this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
 
         // Highlighter

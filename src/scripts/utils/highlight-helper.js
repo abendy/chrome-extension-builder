@@ -21,12 +21,12 @@ export const deserializePosition = (serialized, rootNode) => {
   return new rangy.dom.DomPosition(node, parseInt(parts[1], 10));
 };
 
-export const deserializeRange = (serialized, rootNode, doc) => {
+export const deserializeRange = (serialized, rootNode) => {
   const result = deserializeRegex.exec(serialized);
 
   const start = deserializePosition(result[1], rootNode);
   const end = deserializePosition(result[2], rootNode);
-  const range = rangy.createRange(doc);
+  const range = rangy.createRange();
   range.setStartAndEnd(start.node, start.offset, end.node, end.offset);
   return range;
 };
@@ -35,12 +35,12 @@ export const deserializeSelection = (serialized, doc) => {
   const rootNode = doc.documentElement;
 
   const serializedRanges = serialized.split('|');
-  const sel = rangy.getSelection(window);
+  const sel = rangy.getSelection();
   const ranges = [];
 
   // eslint-disable-next-line no-plusplus
   for (let i = 0, len = serializedRanges.length; i < len; ++i) {
-    ranges[i] = deserializeRange(serializedRanges[i], rootNode, doc);
+    ranges[i] = deserializeRange(serializedRanges[i], rootNode);
   }
   sel.setRanges(ranges);
 
