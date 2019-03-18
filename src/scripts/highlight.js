@@ -6,13 +6,14 @@ import { rangySelectionsaverestore as Saver } from 'rangy-updated/lib/rangy-sele
 import Cookies from 'js-cookie';
 import { deserializeSelection } from './utils/highlight-helper';
 
-if (!rangy.initialized) {
-  rangy.init();
-}
-
 const highlighter = rangy.createHighlighter();
 
 class Highlighter {
+  constructor() {
+    this.rangy = rangy;
+    this.rangy.init();
+  }
+
   removeHighlight(highlightElements, range, el, tempId) {
     highlightElements.forEach((highlightEl) => {
       // Remove .hightlight class
@@ -22,19 +23,19 @@ class Highlighter {
     // Remove .remove el
     el.removeChild(el.lastElementChild);
 
-    const classApplier = rangy.createClassApplier(tempId);
+    const classApplier = this.rangy.createClassApplier(tempId);
     classApplier.undoToRange(range);
 
     Cookies.remove(tempId);
   }
 
   doHighlight(selection, range, tempId) {
-    const classApplier = rangy.createClassApplier(tempId);
     highlighter.addClassApplier(classApplier, true);
     highlighter.highlightSelection(tempId, selection);
+    const classApplier = this.rangy.createClassApplier(tempId);
 
     try {
-      rangy.isRangeValid(range);
+      this.rangy.isRangeValid(range);
     } catch (e) {
       // eslint-disable-next-line no-param-reassign
       range = selection.rangeCount ? selection.getRangeAt(0) : null;
@@ -90,7 +91,7 @@ class Highlighter {
     }
 
     // Get selection object
-    const selection = rangy.getSelection();
+    const selection = this.rangy.getSelection();
     if (selection.toString().length === 0 || selection.isCollapsed) {
       return;
     }
@@ -106,8 +107,8 @@ class Highlighter {
     let serializedRanges = [];
     // eslint-disable-next-line no-plusplus
     for (let i = 0, len = ranges.length; i < len; ++i) {
-      const rootNode = rangy.DomRange.getRangeDocument(ranges[i]).documentElement;
-      const serialized = `${rangy.serializePosition(ranges[i].startContainer, ranges[i].startOffset, rootNode)},${rangy.serializePosition(ranges[i].endContainer, ranges[i].endOffset, rootNode)}`;
+      const rootNode = this.rangy.DomRange.getRangeDocument(ranges[i]).documentElement;
+      const serialized = `${this.rangy.serializePosition(ranges[i].startContainer, ranges[i].startOffset, rootNode)},${this.rangy.serializePosition(ranges[i].endContainer, ranges[i].endOffset, rootNode)}`;
       serializedRanges[i] = serialized;
     }
     serializedRanges = serializedRanges.join('|');
