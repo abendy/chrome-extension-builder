@@ -70,10 +70,13 @@ class Highlighter {
     // Hover over highlight elements to display remove button
     highlightElements.forEach((el) => {
       el.addEventListener('mouseenter', () => {
-        lastEl.childNodes[lastEl.childNodes.length - 1].classList.add('hover');
+        const lastElChildEl = lastEl.childNodes[lastEl.childNodes.length - 1];
+        if (lastElChildEl.tagName.toLowerCase() === 'span' && lastElChildEl.className.toLowerCase() === 'remove') {
+          lastEl.childNodes[lastEl.childNodes.length - 1].classList.add('active');
+        }
       });
       el.addEventListener('mouseleave', () => {
-        lastEl.childNodes[lastEl.childNodes.length - 1].classList.remove('hover');
+        lastEl.childNodes[lastEl.childNodes.length - 1].classList.remove('active');
       });
     });
 
