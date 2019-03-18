@@ -120,7 +120,7 @@ class Highlighter {
     Cookies.set(this.tempId, serializedRanges);
 
     // Highlighter
-    this.doHighlight(this.selection);
+    this.doHighlight();
   }
 }
 
