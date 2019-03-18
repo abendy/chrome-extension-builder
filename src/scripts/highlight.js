@@ -22,14 +22,14 @@ class Highlighter {
     this.range = null;
   }
 
-  removeHighlight(highlightElements, el) {
+  removeHighlight(highlightElements, lastEl) {
     highlightElements.forEach((highlightEl) => {
       // Remove .hightlight class
       highlightEl.classList.remove('highlight');
     });
 
     // Remove .remove el
-    el.removeChild(el.lastElementChild);
+    lastEl.removeChild(lastEl.lastElementChild);
 
     const classApplier = this.rangy.createClassApplier(this.tempId);
     classApplier.undoToRange(this.range);
