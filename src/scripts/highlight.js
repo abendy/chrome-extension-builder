@@ -39,11 +39,13 @@ class Highlighter {
     Cookies.remove(this.highlightId);
   }
 
-  doHighlight() {
+  setRanges() {
     // Get range objects
     this.ranges = this.selection.getAllRanges();
     this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
+  }
 
+  doHighlight() {
     this.highlighter.highlightSelection(this.highlightId, this.selection);
 
     try {
@@ -96,9 +98,7 @@ class Highlighter {
       Object.keys(cookies).forEach((key) => {
         // Get selection object
         this.selection = deserializeSelection(cookies[key], this.doc);
-        if (this.selection.toString().length === 0 || this.selection.isCollapsed) {
-          return;
-        }
+        this.setRanges();
 
         // Set highlight ID
         const [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
@@ -133,6 +133,9 @@ class Highlighter {
 
     // Get selection object
     this.selection = this.rangy.getSelection();
+    this.setRanges();
+
+    // Test selection object
     if (this.selection.toString().length === 0 || this.selection.isCollapsed) {
       return;
     }
