@@ -8,23 +8,26 @@ h1,h2,h3,h4,h5,h6,address,article,blockquote,dd,dl,dt,figcaption,li,ol,ul,pre,p,
 [class^="highlight_"] {
   background-color: skyblue;
   cursor: auto;
-
-  &:hover .remove {
-    display: inline;
-    position: relative;
-  }
+  position: relative;
 }
 
 .remove {
   display: none;
 
   background-color: lightcoral;
+  border-radius: .3rem;
+  bottom: .25rem;
   cursor: url('../../build/assets/images/cursor/baseline-delete-black-18/1x/baseline_delete_black_18dp.png'), auto;
+  font-size: 1.3rem;
   padding: 0 .6rem;
   position: absolute;
-  right: 0;
+  right: .25rem;
+
+  &.hover {
+    display: inline;
+  }
 
   &:hover {
-    text-decoration: underline;
+    background-color: indianred;
   }
 }

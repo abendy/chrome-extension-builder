@@ -63,6 +63,16 @@ class Highlighter {
     });
     lastEl.append(remove);
 
+    // Hover over highlight elements to display remove button
+    highlightElements.forEach((el) => {
+      el.addEventListener('mouseenter', () => {
+        lastEl.childNodes[lastEl.childNodes.length - 1].classList.add('hover');
+      });
+      el.addEventListener('mouseleave', () => {
+        lastEl.childNodes[lastEl.childNodes.length - 1].classList.remove('hover');
+      });
+    });
+
     // Deselect
     this.selection.collapseToEnd();
   }
