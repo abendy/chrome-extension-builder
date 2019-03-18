@@ -13,7 +13,7 @@ if (document.readyState !== 'loading') {
 
 // mouse up event
 document.addEventListener('mouseup', (e) => {
-  highlight.createHighlight(e);
+  highlight.newHighlight(e);
 }, false);
 
 /* app */

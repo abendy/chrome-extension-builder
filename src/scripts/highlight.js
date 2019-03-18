@@ -91,11 +91,11 @@ class Highlighter {
     }
   }
 
-  createHighlight(e, throttle = false) {
+  newHighlight(e, throttle = false) {
     // Detect double & triple mouse click
     if (e.detail === 2 && !throttle) {
       // double click!
-      setTimeout(() => this.createHighlight(e, true), 300);
+      setTimeout(() => this.newHighlight(e, true), 300);
       return;
     }
 
