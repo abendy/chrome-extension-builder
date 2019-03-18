@@ -6,12 +6,12 @@ import { rangySelectionsaverestore as Saver } from 'rangy-updated/lib/rangy-sele
 import Cookies from 'js-cookie';
 import { deserializeSelection } from './utils/highlight-helper';
 
-const highlighter = rangy.createHighlighter();
-
 class Highlighter {
   constructor() {
     this.rangy = rangy;
     this.rangy.init();
+
+    this.highlighter = this.rangy.createHighlighter();
   }
 
   removeHighlight(highlightElements, range, el, tempId) {
@@ -30,9 +30,9 @@ class Highlighter {
   }
 
   doHighlight(selection, range, tempId) {
-    highlighter.addClassApplier(classApplier, true);
-    highlighter.highlightSelection(tempId, selection);
     const classApplier = this.rangy.createClassApplier(tempId);
+    this.highlighter.addClassApplier(classApplier, true);
+    this.highlighter.highlightSelection(tempId, selection);
 
     try {
       this.rangy.isRangeValid(range);
@@ -44,7 +44,7 @@ class Highlighter {
     classApplier.applyToRange(range);
 
     // eslint-disable-next-line max-len
-    const highlightElements = highlighter.highlights[highlighter.highlights.length - 1].getHighlightElements();
+    const highlightElements = this.highlighter.highlights[this.highlighter.highlights.length - 1].getHighlightElements();
 
     highlightElements.forEach((el) => {
       // Add .hightlight class
