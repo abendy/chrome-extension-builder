@@ -23,12 +23,7 @@ class Highlighter {
     this.range = null;
   }
 
-  removeHighlight(highlightElements, lastEl) {
-    highlightElements.forEach((highlightEl) => {
-      // Remove .hightlight class
-      highlightEl.classList.remove('highlight');
-    });
-
+  removeHighlight(lastEl) {
     // Remove .remove el
     lastEl.removeChild(lastEl.lastElementChild);
 
@@ -53,17 +48,13 @@ class Highlighter {
     // eslint-disable-next-line max-len
     const highlightElements = this.highlighter.highlights[this.highlighter.highlights.length - 1].getHighlightElements();
 
-    highlightElements.forEach((el) => {
-      // Add .hightlight class
-      el.classList.add('highlight');
-    });
-
     const lastEl = highlightElements[highlightElements.length - 1];
+
     const remove = document.createElement('span');
     remove.className = 'remove';
     remove.textContent = 'remove';
     lastEl.addEventListener('click', () => {
-      this.removeHighlight(highlightElements, lastEl);
+      this.removeHighlight(lastEl);
     });
     lastEl.append(remove);
 

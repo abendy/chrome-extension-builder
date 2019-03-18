@@ -5,7 +5,7 @@ h1,h2,h3,h4,h5,h6,address,article,blockquote,dd,dl,dt,figcaption,li,ol,ul,pre,p,
   cursor: url('../../build/assets/images/cursor/baseline-brush-black-18/1x/baseline_brush_black_18dp.png'), auto;
 }
 
-.highlight {
+[class^="highlight_"] {
   background-color: skyblue;
   cursor: auto;
 
