@@ -30,11 +30,12 @@ class Highlighter {
     this.highlighter.addClassApplier(this.classApplier, true);
   }
 
-  removeHighlight(lastEl) {
+  removeHighlight(lastEl, highlightId, range) {
     // Remove .remove element
     lastEl.removeChild(lastEl.lastElementChild);
 
-    this.classApplier.undoToRange(this.range);
+    this.setHighlightId(highlightId);
+    this.classApplier.undoToRange(range);
 
     Cookies.remove(this.highlightId);
   }
@@ -60,12 +61,14 @@ class Highlighter {
     const highlightElements = this.highlighter.highlights[this.highlighter.highlights.length - 1].getHighlightElements();
 
     const lastEl = highlightElements[highlightElements.length - 1];
+    const { highlightId, range } = this;
 
+    // Set remove button with click event
     const remove = document.createElement('span');
     remove.className = 'remove';
     remove.textContent = 'remove';
     remove.addEventListener('click', () => {
-      this.removeHighlight(lastEl);
+      this.removeHighlight(lastEl, highlightId, range);
     });
     lastEl.append(remove);
 
