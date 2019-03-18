@@ -92,6 +92,18 @@ class Highlighter {
     }
   }
 
+  saveHighlight() {
+    let serializedRanges = [];
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0, len = this.ranges.length; i < len; ++i) {
+      const rootNode = this.rangy.DomRange.getRangeDocument(this.ranges[i]).documentElement;
+      const serialized = `${this.rangy.serializePosition(this.ranges[i].startContainer, this.ranges[i].startOffset, rootNode)},${this.rangy.serializePosition(this.ranges[i].endContainer, this.ranges[i].endOffset, rootNode)}`;
+      serializedRanges[i] = serialized;
+    }
+    serializedRanges = serializedRanges.join('|');
+    Cookies.set(this.tempId, serializedRanges);
+  }
+
   newHighlight(e, throttle = false) {
     // Detect double & triple mouse click
     if (e.detail === 2 && !throttle) {
@@ -111,15 +123,7 @@ class Highlighter {
     this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
 
     // Save selection
-    let serializedRanges = [];
-    // eslint-disable-next-line no-plusplus
-    for (let i = 0, len = this.ranges.length; i < len; ++i) {
-      const rootNode = this.rangy.DomRange.getRangeDocument(this.ranges[i]).documentElement;
-      const serialized = `${this.rangy.serializePosition(this.ranges[i].startContainer, this.ranges[i].startOffset, rootNode)},${this.rangy.serializePosition(this.ranges[i].endContainer, this.ranges[i].endOffset, rootNode)}`;
-      serializedRanges[i] = serialized;
-    }
-    serializedRanges = serializedRanges.join('|');
-    Cookies.set(this.tempId, serializedRanges);
+    this.saveHighlight();
 
     // Highlighter
     this.doHighlight();
