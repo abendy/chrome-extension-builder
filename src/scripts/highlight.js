@@ -45,7 +45,6 @@ class Highlighter {
     try {
       this.rangy.isRangeValid(this.range);
     } catch (e) {
-      // eslint-disable-next-line no-param-reassign
       this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
     }
 
