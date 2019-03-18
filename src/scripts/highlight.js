@@ -67,7 +67,7 @@ const restoreHighlight = () => {
     Object.keys(cookies).forEach((key) => {
       const [, tempId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
 
-      const selection = deserializeSelection(cookies[key]);
+      const selection = deserializeSelection(cookies[key], window.document);
       const range = selection.rangeCount ? selection.getRangeAt(0) : null;
 
       // Highlighter

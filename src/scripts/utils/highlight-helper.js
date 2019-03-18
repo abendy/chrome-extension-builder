@@ -2,7 +2,7 @@ import rangy from 'rangy-updated';
 
 const deserializeRegex = /^([^,]+),([^,{]+)(\{([^}]+)\})?$/;
 
-export const deserializePosition = (serialized, rootNode, doc) => {
+export const deserializePosition = (serialized, rootNode) => {
   const parts = serialized.split(':');
   let node = rootNode;
   const nodeIndices = parts[0] ? parts[0].split('/') : [];
@@ -24,14 +24,14 @@ export const deserializePosition = (serialized, rootNode, doc) => {
 export const deserializeRange = (serialized, rootNode, doc) => {
   const result = deserializeRegex.exec(serialized);
 
-  const start = deserializePosition(result[1], rootNode, doc);
-  const end = deserializePosition(result[2], rootNode, doc);
+  const start = deserializePosition(result[1], rootNode);
+  const end = deserializePosition(result[2], rootNode);
   const range = rangy.createRange(doc);
   range.setStartAndEnd(start.node, start.offset, end.node, end.offset);
   return range;
 };
 
-export const deserializeSelection = (serialized, rootNode, win) => {
+export const deserializeSelection = (serialized, rootNode, doc) => {
   // eslint-disable-next-line no-param-reassign
   rootNode = window.document.documentElement;
 
@@ -41,7 +41,7 @@ export const deserializeSelection = (serialized, rootNode, win) => {
 
   // eslint-disable-next-line no-plusplus
   for (let i = 0, len = serializedRanges.length; i < len; ++i) {
-    ranges[i] = deserializeRange(serializedRanges[i], rootNode, window.document);
+    ranges[i] = deserializeRange(serializedRanges[i], rootNode, doc);
   }
   sel.setRanges(ranges);
 
