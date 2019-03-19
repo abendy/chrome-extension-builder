@@ -18,6 +18,7 @@ class Highlighter {
     this.ranges = null;
     this.range = null;
     this.highlightId = null;
+    this.classApplier = null;
   }
 
   setHighlightId(highlightId) {
@@ -89,10 +90,12 @@ class Highlighter {
     // Deselect
     this.selection.collapseToEnd();
 
+    // Reset
     this.selection = null;
     this.ranges = null;
     this.range = null;
     this.highlightId = null;
+    this.classApplier = null;
   }
 
   restoreHighlight() {
