@@ -1,5 +1,5 @@
 import highlight from './highlight';
-import { cp } from './utils/util';
+import { cp } from './utils/app-utils';
 
 const App = {
   init() {
