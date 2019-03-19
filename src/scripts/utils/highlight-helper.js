@@ -38,10 +38,10 @@ export const deserializeSelection = (serialized, doc) => {
   const sel = rangy.getSelection();
   const ranges = [];
 
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0, len = serializedRanges.length; i < len; ++i) {
+  Object.keys(serializedRanges).forEach((i) => {
     ranges[i] = deserializeRange(serializedRanges[i], rootNode);
-  }
+  });
+
   sel.setRanges(ranges);
 
   return sel;
