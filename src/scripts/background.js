@@ -2,9 +2,7 @@ import { messenger, updatedTab } from './utils/browser-api';
 
 /* messenger */
 
-// eslint-disable-next-line no-unused-vars
 const connectedHandler = (extPart, name, tabId) => {};
-// eslint-disable-next-line no-unused-vars
 const disconnectedHandler = (extPart, name, tabId) => {};
 
 messenger.initBackgroundHub({

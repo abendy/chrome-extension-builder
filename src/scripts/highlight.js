@@ -4,7 +4,7 @@ import { rangyClassApplier as ClassApplier } from 'rangy-updated/lib/rangy-class
 import { rangySerializer as Serializer } from 'rangy-updated/lib/rangy-serializer';
 import { rangySelectionsaverestore as Saver } from 'rangy-updated/lib/rangy-selectionsaverestore';
 import Cookies from 'js-cookie';
-import { deserializeSelection } from './utils/highlight-helper';
+import { deserializeSelection } from './utils/highlight-utils';
 
 class Highlighter {
   constructor() {
@@ -18,6 +18,7 @@ class Highlighter {
     this.ranges = null;
     this.range = null;
     this.highlightId = null;
+    this.classApplier = null;
   }
 
   setHighlightId(highlightId) {
@@ -89,10 +90,12 @@ class Highlighter {
     // Deselect
     this.selection.collapseToEnd();
 
+    // Reset
     this.selection = null;
     this.ranges = null;
     this.range = null;
     this.highlightId = null;
+    this.classApplier = null;
   }
 
   restoreHighlight() {
@@ -127,7 +130,7 @@ class Highlighter {
     Cookies.set(this.highlightId, serializedRanges);
   }
 
-  newHighlight(e, throttle = false) {
+  newHighlight(e, target, throttle = false) {
     // Detect double & triple mouse click
     if (e.detail === 2 && !throttle) {
       // double click!

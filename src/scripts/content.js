@@ -1,36 +1,22 @@
 import { messenger } from './utils/browser-api';
-import highlight from './highlight';
-
-/* highlighter */
-
-if (document.readyState !== 'loading') {
-  highlight.restoreHighlight();
-} else {
-  document.addEventListener('DOMContentLoaded', () => {
-    highlight.restoreHighlight();
-  });
-}
-
-// mouse up event
-document.addEventListener('mouseup', (e) => {
-  highlight.newHighlight(e);
-}, false);
+import App from './app';
 
 /* app */
 
-const extractedTags = () => {
-  const data = {};
+const app = (proto, ext) => Object.assign(Object.create(proto), ext);
 
-  data.url = document.location.href;
-  data.title = document.title;
-
-  const descriptionTag = document.querySelector('meta[name=\'description\']');
-  if (descriptionTag) {
-    data.description = descriptionTag.getAttribute('content');
-  }
-
-  return data;
+const bodyEl = document.querySelector('body');
+const ext = {
+  el: bodyEl,
 };
+
+if (document.readyState !== 'loading') {
+  app(App, ext).init();
+} else {
+  document.addEventListener('DOMContentLoaded', () => {
+    app(App, ext).init();
+  });
+}
 
 /* messenger */
 
@@ -42,7 +28,7 @@ const messageHandler = (message, from, sender, sendResponse) => {
   }
 
   if (message.action === 'process-page') {
-    sendResponse(extractedTags());
+    sendResponse(App.extractPage());
   }
 };
 
