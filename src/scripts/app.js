@@ -5,6 +5,7 @@ const App = {
   init() {
     cp(
       'initEvent',
+      'extractPage',
       'mounted',
     )(this);
 
@@ -31,18 +32,17 @@ const App = {
     const key = e.keyCode;
   },
 
-  extractedTags() {
-    const data = {};
-
-    data.url = document.location.href;
-    data.title = document.title;
+  extractPage() {
+    this.page_data = {};
+    this.page_data.url = window.document.location.href;
+    this.page_data.title = window.document.title;
 
     const descriptionTag = document.querySelector('meta[property=\'og:description\']') || document.querySelector('meta[name=\'description\']');
     if (descriptionTag) {
-      data.description = descriptionTag.getAttribute('content');
+      this.page_data.description = descriptionTag.getAttribute('content');
     }
 
-    return data;
+    return this.page_data;
   },
 };
 

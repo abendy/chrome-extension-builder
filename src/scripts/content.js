@@ -28,7 +28,7 @@ const messageHandler = (message, from, sender, sendResponse) => {
   }
 
   if (message.action === 'process-page') {
-    sendResponse(App.extractedTags());
+    sendResponse(App.extractPage());
   }
 };
 
