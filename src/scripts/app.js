@@ -30,6 +30,20 @@ const App = {
   keyBoardHandler(e) {
     const key = e.keyCode;
   },
+
+  extractedTags() {
+    const data = {};
+
+    data.url = document.location.href;
+    data.title = document.title;
+
+    const descriptionTag = document.querySelector('meta[property=\'og:description\']') || document.querySelector('meta[name=\'description\']');
+    if (descriptionTag) {
+      data.description = descriptionTag.getAttribute('content');
+    }
+
+    return data;
+  },
 };
 
 export default App;
