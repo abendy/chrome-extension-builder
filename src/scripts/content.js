@@ -1,20 +1,20 @@
 import { messenger } from './utils/browser-api';
-import highlight from './highlight';
+import App from './app';
 
-/* highlighter */
+const app = (proto, ext) => Object.assign(Object.create(proto), ext);
+
+const bodyEl = document.querySelector('body');
+const ext = {
+  el: bodyEl,
+};
 
 if (document.readyState !== 'loading') {
-  highlight.restoreHighlight();
+  app(App, ext).init();
 } else {
   document.addEventListener('DOMContentLoaded', () => {
-    highlight.restoreHighlight();
+    app(App, ext).init();
   });
 }
-
-// mouse up event
-document.addEventListener('mouseup', (e) => {
-  highlight.newHighlight(e);
-}, false);
 
 /* app */
 

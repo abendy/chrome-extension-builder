@@ -127,7 +127,7 @@ class Highlighter {
     Cookies.set(this.highlightId, serializedRanges);
   }
 
-  newHighlight(e, throttle = false) {
+  newHighlight(e, target, throttle = false) {
     // Detect double & triple mouse click
     if (e.detail === 2 && !throttle) {
       // double click!
