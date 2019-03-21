@@ -14,32 +14,29 @@ export const deserializePosition = (serialized, rootNode) => {
     if (nodeIndex < node.childNodes.length) {
       node = node.childNodes[nodeIndex];
     } else {
-      throw module.createError(`deserializePosition() failed': node ${rangy.dom.inspectNode(node)} has no child with index ${nodeIndex}, ${i}`);
+      throw module.createError(`deserializePosition() failed: node ${rangy.dom.inspectNode(node)} has no child with index ${nodeIndex}, ${i}`);
     }
   }
 
   return new rangy.dom.DomPosition(node, parseInt(parts[1], 10));
 };
 
-export const deserializeRange = (serialized, rootNode) => {
+export const deserializeRange = (serialized, rootNode, doc) => {
   const result = deserializeRegex.exec(serialized);
-
-  const start = deserializePosition(result[1], rootNode);
-  const end = deserializePosition(result[2], rootNode);
-  const range = rangy.createRange();
+  const start = deserializePosition(result[1], rootNode, doc);
+  const end = deserializePosition(result[2], rootNode, doc);
+  const range = rangy.createRange(doc);
   range.setStartAndEnd(start.node, start.offset, end.node, end.offset);
   return range;
 };
 
-export const deserializeSelection = (serialized, doc) => {
-  const rootNode = doc.documentElement;
-
+export const deserializeSelection = (serialized, rootNode, win) => {
   const serializedRanges = serialized.split('|');
-  const sel = rangy.getSelection();
+  const sel = rangy.getSelection(win);
   const ranges = [];
 
   Object.keys(serializedRanges).forEach((i) => {
-    ranges[i] = deserializeRange(serializedRanges[i], rootNode);
+    ranges[i] = deserializeRange(serializedRanges[i], rootNode.documentElement, win.document);
   });
 
   sel.setRanges(ranges);

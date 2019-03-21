@@ -9,7 +9,8 @@ import { deserializeSelection } from './utils/highlight-utils';
 
 class Highlighter {
   constructor() {
-    this.doc = window.document;
+    this.win = window;
+    this.doc = this.win.document;
     this.rangy = rangy;
     this.rangy.init();
 
@@ -147,7 +148,7 @@ class Highlighter {
           const highlight = JSON.parse(highlights[key]);
 
           // Get selection object
-          this.selection = deserializeSelection(highlight.serializedRanges, this.doc);
+          this.selection = deserializeSelection(highlight.serializedRanges, this.doc, this.win);
           this.setRanges();
 
           // Set highlight ID
