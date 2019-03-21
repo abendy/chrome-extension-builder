@@ -130,7 +130,36 @@ class Highlighter {
       serializedRanges[i] = serialized;
     });
     serializedRanges = serializedRanges.join('|');
+
+    // prepare data for storage
+    const { hostname } = window.document.location;
+
+    const rangeStr = JSON.stringify(this.range.toString());
+    const rangeHtml = JSON.stringify(this.range.toHtml());
+    const location = JSON.stringify(window.document.location);
+
+    const postData = {
+      [this.highlightId]: {
+        serializedRanges,
+        rangeStr,
+        rangeHtml,
+        location,
+      },
+    };
+
+    // Store data
     Cookies.set(this.highlightId, serializedRanges);
+
+    api
+      .post(`${this.db_host}/api/save/`, {
+        [hostname]: postData,
+      })
+      .then((response) => {
+        console.log('post response', response);
+      })
+      .catch((error) => {
+        console.log('post error', error);
+      });
   }
 
   newHighlight(e, target, throttle = false) {
