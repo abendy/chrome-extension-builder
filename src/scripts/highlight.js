@@ -17,7 +17,7 @@ class Highlighter {
     this.db_host = process.env.DB_HOST;
 
     this.location = this.doc.location;
-    this.domain = this.location.hostname.replace(/^(www?[0-9]?\.)[^.]+\./, '');
+    this.hostname = this.location.hostname;
 
     this.highlighter = this.rangy.createHighlighter();
   }
@@ -49,7 +49,7 @@ class Highlighter {
 
     api
       .post(`${this.db_host}/api/delete/`, {
-        domain: this.domain,
+        hostname: this.hostname,
         highlight_id: this.highlightId,
       }, {
         headers: {
@@ -117,9 +117,11 @@ class Highlighter {
 
   restoreHighlight() {
     // Get highlight data from database.
+    const { hostname } = this;
+
     api
       .post(`${this.db_host}/api/get/`, {
-        domain: this.domain,
+        hostname,
       }, {
         headers: {
           'Content-Type': 'application/json',
@@ -176,7 +178,7 @@ class Highlighter {
 
     api
       .post(`${this.db_host}/api/save/`, {
-        [this.domain]: postData,
+        [this.hostname]: postData,
       }, {
         headers: {
           'Content-Type': 'application/json',
