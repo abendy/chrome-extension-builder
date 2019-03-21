@@ -40,7 +40,23 @@ class Highlighter {
     this.setHighlightId(highlightId);
     this.classApplier.undoToRange(range);
 
+    // prepare data for storage
+    const { hostname } = window.document.location;
+
+    // Delete data from database
     Cookies.remove(this.highlightId);
+
+    api
+      .post(`${this.db_host}/api/delete/`, {
+        hostname,
+        highlight_id: this.highlightId,
+      })
+      .then((response) => {
+        console.log('delete response', response);
+      })
+      .catch((error) => {
+        console.log('delete error', error);
+      });
   }
 
   setRanges() {
