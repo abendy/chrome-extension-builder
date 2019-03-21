@@ -49,6 +49,9 @@ class Highlighter {
 
     api
       .post(`${this.db_host}/api/delete/`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
         hostname,
         highlight_id: this.highlightId,
       })
@@ -124,6 +127,9 @@ class Highlighter {
 
     api
       .post(`${this.db_host}/api/get/`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
         hostname,
       })
       .then((response) => {
@@ -179,6 +185,9 @@ class Highlighter {
 
     api
       .post(`${this.db_host}/api/save/`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
         [hostname]: postData,
       })
       .then((response) => {
