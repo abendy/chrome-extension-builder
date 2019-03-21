@@ -49,11 +49,12 @@ class Highlighter {
 
     api
       .post(`${this.db_host}/api/delete/`, {
+        hostname,
+        highlight_id: this.highlightId,
+      }, {
         headers: {
           'Content-Type': 'application/json',
         },
-        hostname,
-        highlight_id: this.highlightId,
       })
       .then((response) => {
         console.log('delete response', response);
@@ -127,10 +128,11 @@ class Highlighter {
 
     api
       .post(`${this.db_host}/api/get/`, {
+        hostname,
+      }, {
         headers: {
           'Content-Type': 'application/json',
         },
-        hostname,
       })
       .then((response) => {
         const highlights = response.data;
@@ -185,10 +187,11 @@ class Highlighter {
 
     api
       .post(`${this.db_host}/api/save/`, {
+        [hostname]: postData,
+      }, {
         headers: {
           'Content-Type': 'application/json',
         },
-        [hostname]: postData,
       })
       .then((response) => {
         console.log('post response', response);
