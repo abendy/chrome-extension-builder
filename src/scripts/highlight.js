@@ -30,7 +30,13 @@ class Highlighter {
     if (!highlightId) {
       this.highlightId = `highlight_${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`;
     }
-    this.classApplier = this.rangy.createClassApplier(this.highlightId);
+
+    const config = {
+      tagNames: ['img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'address', 'article', 'blockquote', 'dd', 'dl', 'dt', 'figcaption', 'li', 'ol', 'ul', 'pre', 'p', 'abbr', 'cite', 'code', 'dfn', 'em', 'i', 'q', 's', 'small', 'span', 'strong', 'sub', 'sup', 'u'],
+      elementTagName: 'span',
+    };
+    this.classApplier = this.rangy.createClassApplier(this.highlightId, config);
+
     this.highlighter.addClassApplier(this.classApplier, true);
   }
 
