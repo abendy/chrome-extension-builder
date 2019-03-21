@@ -102,24 +102,34 @@ class Highlighter {
   }
 
   restoreHighlight() {
-    try {
-      const cookies = Cookies.get();
+    // Get highlight data from database.
+    const { hostname } = window.document.location;
 
-      Object.keys(cookies).forEach((key) => {
-        // Get selection object
-        this.selection = deserializeSelection(cookies[key], this.doc);
-        this.setRanges();
+    api
+      .post(`${this.db_host}/api/get/`, {
+        hostname,
+      })
+      .then((response) => {
+        const highlights = response.data;
 
-        // Set highlight ID
-        const [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
-        this.setHighlightId(highlightId);
+        Object.keys(highlights).forEach((key) => {
+          const highlight = JSON.parse(highlights[key]);
 
-        // Highlighter
-        this.doHighlight();
+          // Get selection object
+          this.selection = deserializeSelection(highlight.serializedRanges, this.doc);
+          this.setRanges();
+
+          // Set highlight ID
+          const [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
+          this.setHighlightId(highlightId);
+
+          // Highlighter
+          this.doHighlight();
+        });
+      })
+      .catch((error) => {
+        console.log('get error', error);
       });
-    } catch (e) {
-      console.log('ERROR', e);
-    }
   }
 
   saveHighlight() {
