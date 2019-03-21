@@ -14,7 +14,7 @@ export const deserializePosition = (serialized, rootNode) => {
     if (nodeIndex < node.childNodes.length) {
       node = node.childNodes[nodeIndex];
     } else {
-      throw module.createError(`deserializePosition() failed: node ${rangy.dom.inspectNode(node)} has no child with index ${nodeIndex}, ${i}`);
+      throw new Error(`deserializePosition() failed: node ${rangy.dom.inspectNode(node)} has no child with index ${nodeIndex}, ${i}`);
     }
   }
 
