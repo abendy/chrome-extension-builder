@@ -3,6 +3,7 @@ import { rangyHighlight as Highlight } from 'rangy-updated/lib/rangy-highlighter
 import { rangyClassApplier as ClassApplier } from 'rangy-updated/lib/rangy-classapplier';
 import { rangySerializer as Serializer } from 'rangy-updated/lib/rangy-serializer';
 import { rangySelectionsaverestore as Saver } from 'rangy-updated/lib/rangy-selectionsaverestore';
+import api from 'axios';
 import Cookies from 'js-cookie';
 import { deserializeSelection } from './utils/highlight-utils';
 
@@ -12,6 +13,9 @@ class Highlighter {
     this.rangy = rangy;
     this.rangy.init();
 
+    this.db_host = process.env.DB_HOST;
+
+    this.location = window.document.location;
     this.highlighter = this.rangy.createHighlighter();
 
     this.selection = null;
@@ -37,7 +41,26 @@ class Highlighter {
     this.setHighlightId(highlightId);
     this.classApplier.undoToRange(range);
 
+    // prepare data for storage
+    const { hostname } = this.location;
+
+    // Delete data from database
     Cookies.remove(this.highlightId);
+
+    api
+      .post(`${this.db_host}/api/delete/`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        hostname,
+        highlight_id: this.highlightId,
+      })
+      .then((response) => {
+        console.log('delete response', response);
+      })
+      .catch((error) => {
+        console.log('delete error', error);
+      });
   }
 
   setRanges() {
@@ -99,24 +122,37 @@ class Highlighter {
   }
 
   restoreHighlight() {
-    try {
-      const cookies = Cookies.get();
+    // Get highlight data from database.
+    const { hostname } = this.location;
 
-      Object.keys(cookies).forEach((key) => {
-        // Get selection object
-        this.selection = deserializeSelection(cookies[key], this.doc);
-        this.setRanges();
+    api
+      .post(`${this.db_host}/api/get/`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        hostname,
+      })
+      .then((response) => {
+        const highlights = response.data;
 
-        // Set highlight ID
-        const [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
-        this.setHighlightId(highlightId);
+        Object.keys(highlights).forEach((key) => {
+          const highlight = JSON.parse(highlights[key]);
 
-        // Highlighter
-        this.doHighlight();
+          // Get selection object
+          this.selection = deserializeSelection(highlight.serializedRanges, this.doc);
+          this.setRanges();
+
+          // Set highlight ID
+          const [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
+          this.setHighlightId(highlightId);
+
+          // Highlighter
+          this.doHighlight();
+        });
+      })
+      .catch((error) => {
+        console.log('get error', error);
       });
-    } catch (e) {
-      console.log('ERROR', e);
-    }
   }
 
   saveHighlight() {
@@ -127,7 +163,39 @@ class Highlighter {
       serializedRanges[i] = serialized;
     });
     serializedRanges = serializedRanges.join('|');
+
+    // prepare data for storage
+    const { hostname } = this.location;
+
+    const rangeStr = JSON.stringify(this.range.toString());
+    const rangeHtml = JSON.stringify(this.range.toHtml());
+    const location = JSON.stringify(this.location);
+
+    const postData = {
+      [this.highlightId]: {
+        serializedRanges,
+        rangeStr,
+        rangeHtml,
+        location,
+      },
+    };
+
+    // Store data
     Cookies.set(this.highlightId, serializedRanges);
+
+    api
+      .post(`${this.db_host}/api/save/`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        [hostname]: postData,
+      })
+      .then((response) => {
+        console.log('post response', response);
+      })
+      .catch((error) => {
+        console.log('post error', error);
+      });
   }
 
   newHighlight(e, target, throttle = false) {

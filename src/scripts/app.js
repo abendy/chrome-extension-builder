@@ -4,22 +4,26 @@ import { cp } from './utils/app-utils';
 const App = {
   init() {
     cp(
-      'initEvent',
-      'extractPage',
+      'fetch',
       'mounted',
+      'events',
+      'extractPage',
     )(this);
 
     return this;
   },
 
-  initEvent() {
-    this.el.addEventListener('click', this.clickHandler.bind(this));
-    window.addEventListener('keydown', this.keyBoardHandler.bind(this));
-    return this;
+  fetch() {
+    highlight.restoreHighlight();
   },
 
   mounted() {
-    highlight.restoreHighlight();
+  },
+
+  events() {
+    this.el.addEventListener('click', this.clickHandler.bind(this));
+    window.addEventListener('keydown', this.keyBoardHandler.bind(this));
+    return this;
   },
 
   clickHandler(e) {

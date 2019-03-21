@@ -130,9 +130,18 @@ const getPopup = (details, callback) => {
   });
 };
 
-// TODO
+// Browser storage.
 const storage = (chrome.storage.sync ? chrome.storage.sync : chrome.storage.local);
 
+//
+const getStorage = key => new Promise(resolve => storage.get(key, resp => resolve(resp)));
+
+// Fired when one or more storage items change.
+const updatedStorage = (callback) => {
+  storage.onChanged.addListener((object) => {
+    callback(object);
+  });
+};
 
 export {
   messenger,
@@ -153,4 +162,6 @@ export {
   setIcon,
   getPopup,
   storage,
+  getStorage,
+  updatedStorage,
 };
