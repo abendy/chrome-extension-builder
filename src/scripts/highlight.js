@@ -16,14 +16,9 @@ class Highlighter {
 
     this.db_host = process.env.DB_HOST;
 
-    this.location = window.document.location;
-    this.highlighter = this.rangy.createHighlighter();
+    this.location = this.doc.location;
 
-    this.selection = null;
-    this.ranges = null;
-    this.range = null;
-    this.highlightId = null;
-    this.classApplier = null;
+    this.highlighter = this.rangy.createHighlighter();
   }
 
   setHighlightId(highlightId) {
@@ -120,13 +115,6 @@ class Highlighter {
 
     // Deselect
     this.selection.collapseToEnd();
-
-    // Reset
-    this.selection = null;
-    this.ranges = null;
-    this.range = null;
-    this.highlightId = null;
-    this.classApplier = null;
   }
 
   restoreHighlight() {
