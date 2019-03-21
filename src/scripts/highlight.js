@@ -3,6 +3,7 @@ import { rangyHighlight as Highlight } from 'rangy-updated/lib/rangy-highlighter
 import { rangyClassApplier as ClassApplier } from 'rangy-updated/lib/rangy-classapplier';
 import { rangySerializer as Serializer } from 'rangy-updated/lib/rangy-serializer';
 import { rangySelectionsaverestore as Saver } from 'rangy-updated/lib/rangy-selectionsaverestore';
+import api from 'axios';
 import Cookies from 'js-cookie';
 import { deserializeSelection } from './utils/highlight-utils';
 
