@@ -3,7 +3,6 @@ import { rangyHighlight as Highlight } from 'rangy-updated/lib/rangy-highlighter
 import { rangyClassApplier as ClassApplier } from 'rangy-updated/lib/rangy-classapplier';
 import { rangySerializer as Serializer } from 'rangy-updated/lib/rangy-serializer';
 import { rangySelectionsaverestore as Saver } from 'rangy-updated/lib/rangy-selectionsaverestore';
-import config from 'dotenv';
 import api from 'axios';
 import Cookies from 'js-cookie';
 import { deserializeSelection } from './utils/highlight-utils';
@@ -14,8 +13,9 @@ class Highlighter {
     this.rangy = rangy;
     this.rangy.init();
 
-    this.highlighter = this.rangy.createHighlighter();
     this.db_host = process.env.DB_HOST;
+
+    this.highlighter = this.rangy.createHighlighter();
 
     this.selection = null;
     this.ranges = null;

@@ -5,6 +5,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader');
 const WebpackNotifierPlugin = require('webpack-notifier');
+const Dotenv = require('dotenv-webpack');
 
 const { NODE_ENV = 'development' } = process.env;
 
@@ -80,6 +81,9 @@ const base = {
       }],
     }],
   },
+  node: {
+    fs: 'empty',
+  },
 };
 
 const development = {
@@ -91,6 +95,7 @@ const development = {
     ...base.module,
   },
   plugins: [
+    new Dotenv(),
     new WebpackShellPlugin({
       onBuildStart: [
         'rm -fr build/assets/**/*',
