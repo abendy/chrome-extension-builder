@@ -15,6 +15,7 @@ class Highlighter {
 
     this.db_host = process.env.DB_HOST;
 
+    this.location = window.document.location;
     this.highlighter = this.rangy.createHighlighter();
 
     this.selection = null;
@@ -41,7 +42,7 @@ class Highlighter {
     this.classApplier.undoToRange(range);
 
     // prepare data for storage
-    const { hostname } = window.document.location;
+    const { hostname } = this.location;
 
     // Delete data from database
     Cookies.remove(this.highlightId);
@@ -119,7 +120,7 @@ class Highlighter {
 
   restoreHighlight() {
     // Get highlight data from database.
-    const { hostname } = window.document.location;
+    const { hostname } = this.location;
 
     api
       .post(`${this.db_host}/api/get/`, {
@@ -158,11 +159,11 @@ class Highlighter {
     serializedRanges = serializedRanges.join('|');
 
     // prepare data for storage
-    const { hostname } = window.document.location;
+    const { hostname } = this.location;
 
     const rangeStr = JSON.stringify(this.range.toString());
     const rangeHtml = JSON.stringify(this.range.toHtml());
-    const location = JSON.stringify(window.document.location);
+    const location = JSON.stringify(this.location);
 
     const postData = {
       [this.highlightId]: {
