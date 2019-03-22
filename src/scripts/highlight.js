@@ -37,12 +37,12 @@ class Highlighter {
     this.highlighter.addClassApplier(this.classApplier, true);
   }
 
-  removeHighlight(lastEl, highlightId, range) {
+  removeHighlight(lastEl, highlightElements, highlightId, range) {
     // Remove .remove element
     lastEl.removeChild(lastEl.lastElementChild);
 
     // We need to remove the `highlight` first or undoToRange won't completely remove the highlight
-    [].forEach.call(this.doc.querySelectorAll(highlightId), el => el.classList.remove('highlight'));
+    [].forEach.call(highlightElements, el => el.classList.remove('highlight'));
 
     this.setHighlightId(highlightId);
     this.classApplier.undoToRange(range);
@@ -103,7 +103,7 @@ class Highlighter {
     const highlightElements = this.highlighter.highlights[this.highlighter.highlights.length - 1].getHighlightElements();
 
     // Add general highlight class
-    highlightElements.forEach(el => el.classList.add('highlight'));
+    [].forEach.call(highlightElements, el => el.classList.add('highlight'));
 
     const lastEl = highlightElements[highlightElements.length - 1];
     const { highlightId, range } = this;
@@ -113,7 +113,7 @@ class Highlighter {
     remove.className = 'remove';
     remove.textContent = 'remove';
     remove.addEventListener('click', () => {
-      this.removeHighlight(lastEl, highlightId, range);
+      this.removeHighlight(lastEl, highlightElements, highlightId, range);
     });
     lastEl.append(remove);
 
