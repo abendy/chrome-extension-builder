@@ -1,4 +1,4 @@
-import { messenger, updatedTab } from './utils/browser-api';
+import { messenger, onUpdatedTab } from './utils/browser-api';
 
 /* messenger */
 
@@ -12,7 +12,7 @@ messenger.initBackgroundHub({
 
 const connection = messenger.initConnection('main');
 
-updatedTab((tabId, changeInfo, tab) => {
+onUpdatedTab((tabId, changeInfo, tab) => {
   connection.sendMessage(`content_script:main:${tabId}`, {
     action: 'tab-updated',
     tab,

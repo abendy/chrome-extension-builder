@@ -34,7 +34,7 @@ const sendTabMessage = (tabId, message, options, callback) => {
 // Fired when a message is sent from either
 // an extension process (runtime.sendMessage) or a content script (tabs.sendMessage).
 // https://developer.chrome.com/apps/runtime#event-onMessage
-const listen = (callback) => {
+const onMessage = (callback) => {
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     callback(message, sender, sendResponse);
   });
@@ -58,7 +58,7 @@ const exec = (tabId, details, callback) => {
 
 // Fired when a tab is updated.
 // https://developer.chrome.com/extensions/tabs#event-onUpdated
-const updatedTab = (callback) => {
+const onUpdatedTab = (callback) => {
   chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     callback(tabId, changeInfo, tab);
   });
@@ -68,7 +68,7 @@ const updatedTab = (callback) => {
 // Note that the tab's URL may not be set at the time this event fired,
 // but you can listen to onUpdated events so as to be notified when a URL is set.
 // https://developer.chrome.com/extensions/tabs#event-onActivated
-const activatedTab = (callback) => {
+const onActivatedTab = (callback) => {
   chrome.tabs.onActivated.addListener((activeInfo) => {
     callback(activeInfo);
   });
@@ -84,7 +84,7 @@ const getCurrent = (callback) => {
 };
 
 // Get all tabs.
-const allTabs = (callback) => {
+const getAllTabs = (callback) => {
   // Gets all windows.
   // https://developer.chrome.com/extensions/windows#method-getAll
   chrome.windows.getAll({ populate: true }, (windows) => {
@@ -99,7 +99,7 @@ const allTabs = (callback) => {
 };
 
 // Get active tab.
-const activeTab = (callback) => {
+const getActiveTab = (callback) => {
   // Gets all tabs that have the specified properties.
   // https://developer.chrome.com/extensions/tabs#method-query
   chrome.tabs.query({ active: true, currentWindow: true }, (tab) => {
@@ -110,7 +110,7 @@ const activeTab = (callback) => {
 // Fired when a browser action icon is clicked.
 // Does not fire if the browser action has a popup.
 // https://developer.chrome.com/extensions/browserAction#event-onClicked
-const button = (callback) => {
+const onClicked = (callback) => {
   chrome.browserAction.onClicked.addListener(callback);
 };
 
@@ -150,15 +150,15 @@ export {
   getURL,
   sendMessage,
   sendTabMessage,
-  listen,
+  onMessage,
   newTab,
   exec,
-  updatedTab,
-  activatedTab,
+  onUpdatedTab,
+  onActivatedTab,
   getCurrent,
-  allTabs,
-  activeTab,
-  button,
+  getAllTabs,
+  getActiveTab,
+  onClicked,
   setIcon,
   getPopup,
   storage,
