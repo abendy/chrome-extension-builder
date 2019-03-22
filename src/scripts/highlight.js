@@ -67,7 +67,10 @@ class Highlighter {
   setRanges() {
     // Get range objects
     this.ranges = this.selection.getAllRanges();
+
     this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
+    this.rangeStr = this.range.toString();
+    this.rangeHtml = this.range.toHtml();
   }
 
   doHighlight() {
@@ -160,8 +163,8 @@ class Highlighter {
     serializedRanges = serializedRanges.join('|');
 
     // Prepare data for storage
-    const rangeStr = JSON.stringify(this.range.toString());
-    const rangeHtml = JSON.stringify(this.range.toHtml());
+    const rangeStr = JSON.stringify(this.rangeStr);
+    const rangeHtml = JSON.stringify(this.rangeHtml);
     const location = JSON.stringify(this.location);
 
     const postData = {
