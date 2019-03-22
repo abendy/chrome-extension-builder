@@ -41,6 +41,9 @@ class Highlighter {
     // Remove .remove element
     lastEl.removeChild(lastEl.lastElementChild);
 
+    // We need to remove the `highlight` first or undoToRange won't completely remove the highlight
+    [].forEach.call(this.doc.querySelectorAll(highlightId), el => el.classList.remove('highlight'));
+
     this.setHighlightId(highlightId);
     this.classApplier.undoToRange(range);
 
