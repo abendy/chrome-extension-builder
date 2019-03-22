@@ -99,6 +99,9 @@ class Highlighter {
     // eslint-disable-next-line max-len
     const highlightElements = this.highlighter.highlights[this.highlighter.highlights.length - 1].getHighlightElements();
 
+    // Add general highlight class
+    highlightElements.forEach(el => el.classList.add('highlight'));
+
     const lastEl = highlightElements[highlightElements.length - 1];
     const { highlightId, range } = this;
 
