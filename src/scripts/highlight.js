@@ -71,6 +71,16 @@ class Highlighter {
     this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
     this.rangeStr = this.range.toString();
     this.rangeHtml = this.range.toHtml();
+
+    if (this.selection.rangeCount > 0) {
+      const parentEl = this.range.commonAncestorContainer;
+
+      if (parentEl.nodeType === 3) { // Text
+        this.parentEl = parentEl.parentNode;
+      } else if (parentEl.nodeType === 1) { // Element
+        this.parentEl = parentEl;
+      }
+    }
   }
 
   doHighlight() {
@@ -165,6 +175,7 @@ class Highlighter {
     // Prepare data for storage
     const rangeStr = JSON.stringify(this.rangeStr);
     const rangeHtml = JSON.stringify(this.rangeHtml);
+    const parentEl = JSON.stringify(this.parentEl);
     const location = JSON.stringify(this.location);
 
     const postData = {
@@ -172,6 +183,7 @@ class Highlighter {
         serializedRanges,
         rangeStr,
         rangeHtml,
+        parentEl,
         location,
       },
     };
