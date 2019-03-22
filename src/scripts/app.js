@@ -1,3 +1,4 @@
+import { messenger } from './utils/browser-api';
 import highlight from './highlight';
 import { cp } from './utils/app-utils';
 
@@ -7,6 +8,7 @@ const App = {
       'fetch',
       'mounted',
       'events',
+      'messenger',
       'extractPage',
     )(this);
 
@@ -26,6 +28,22 @@ const App = {
     this.el.addEventListener('mouseup', this.clickHandler.bind(this));
     window.addEventListener('keydown', this.keyBoardHandler.bind(this));
     return this;
+  },
+
+  messenger() {
+    messenger.initConnection('main', this.messageHandler);
+  },
+
+  messageHandler(message, from, sender, sendResponse) {
+    console.log('from:', from, message);
+
+    if (message.action === 'tab-updated') {
+      sendResponse(`tab ${message.tab.id} updated: ${message.tab.title}`);
+    }
+
+    if (message.action === 'process-page') {
+      sendResponse(App.extractPage());
+    }
   },
 
   clickHandler(e, throttle = false) {
