@@ -121,7 +121,12 @@ class Highlighter {
     highlightElements.forEach((el) => {
       el.addEventListener('mouseenter', () => {
         const lastElChildEl = lastEl.childNodes[lastEl.childNodes.length - 1];
-        if (lastElChildEl.tagName.toLowerCase() === 'span' && lastElChildEl.className.toLowerCase() === 'remove') {
+
+        if (typeof lastElChildEl === 'undefined') {
+          return;
+        }
+
+        if (lastElChildEl.tagName === 'SPAN' && lastElChildEl.className === 'remove') {
           lastEl.childNodes[lastEl.childNodes.length - 1].classList.add('active');
         }
       });
