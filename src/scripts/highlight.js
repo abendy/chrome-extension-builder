@@ -230,9 +230,14 @@ class Highlighter {
     this.selection = this.rangy.getSelection();
     this.setRanges();
 
-    // Test selection object
+    // Test selection object for: 0 char length OR if text has been de-selected
     if (this.selection.toString().length === 0 || this.selection.isCollapsed) {
       return;
+    }
+
+    if (this.rangeHtml.indexOf('highlight') > -1) {
+      // TODO alert user
+      throw new Error('Highlights are overlapping');
     }
 
     // Set highlight ID
