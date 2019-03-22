@@ -22,14 +22,27 @@ const App = {
 
   events() {
     this.el.addEventListener('click', this.clickHandler.bind(this));
+    this.el.addEventListener('mousedown', this.clickHandler.bind(this));
+    this.el.addEventListener('mouseup', this.clickHandler.bind(this));
     window.addEventListener('keydown', this.keyBoardHandler.bind(this));
     return this;
   },
 
-  clickHandler(e) {
-    const { target } = e;
+  clickHandler(e, throttle = false) {
+    const {
+      button, detail, target, type,
+    } = e;
 
-    highlight.newHighlight(e, target);
+    if (type === 'mouseup') {
+      // Detect double & triple mouse click
+      if (detail === 2 && !throttle) {
+        // double click!
+        setTimeout(() => this.clickHandler(e, true), 300);
+        return;
+      }
+
+      highlight.newHighlight();
+    }
   },
 
   keyBoardHandler(e) {

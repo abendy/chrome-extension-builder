@@ -218,14 +218,7 @@ class Highlighter {
       });
   }
 
-  newHighlight(e, target, throttle = false) {
-    // Detect double & triple mouse click
-    if (e.detail === 2 && !throttle) {
-      // double click!
-      setTimeout(() => this.newHighlight(e, true), 300);
-      return;
-    }
-
+  newHighlight() {
     // Get selection object
     this.selection = this.rangy.getSelection();
     this.setRanges();
