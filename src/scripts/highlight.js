@@ -29,7 +29,7 @@ class Highlighter {
     }
 
     const config = {
-      tagNames: ['img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'address', 'article', 'blockquote', 'dd', 'dl', 'dt', 'figcaption', 'li', 'ol', 'ul', 'pre', 'p', 'abbr', 'cite', 'code', 'dfn', 'em', 'i', 'q', 's', 'small', 'span', 'strong', 'sub', 'sup', 'u'],
+      tagNames: ['img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'address', 'article', 'blockquote', 'dd', 'dl', 'dt', 'picture', 'figure', 'figcaption', 'li', 'ol', 'ul', 'pre', 'p', 'abbr', 'cite', 'code', 'dfn', 'em', 'i', 'q', 's', 'small', 'span', 'strong', 'sub', 'sup', 'u'],
       elementTagName: 'span',
     };
     this.classApplier = this.rangy.createClassApplier(this.highlightId, config);
@@ -37,9 +37,12 @@ class Highlighter {
     this.highlighter.addClassApplier(this.classApplier, true);
   }
 
-  removeHighlight(lastEl, highlightId, range) {
+  removeHighlight(lastEl, highlightElements, highlightId, range) {
     // Remove .remove element
     lastEl.removeChild(lastEl.lastElementChild);
+
+    // We need to remove the `highlight` first or undoToRange won't completely remove the highlight
+    [].forEach.call(highlightElements, el => el.classList.remove('highlight'));
 
     this.setHighlightId(highlightId);
     this.classApplier.undoToRange(range);
@@ -67,7 +70,20 @@ class Highlighter {
   setRanges() {
     // Get range objects
     this.ranges = this.selection.getAllRanges();
+
     this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
+    this.rangeStr = this.range.toString();
+    this.rangeHtml = this.range.toHtml();
+
+    if (this.selection.rangeCount > 0) {
+      const parentEl = this.range.commonAncestorContainer;
+
+      if (parentEl.nodeType === 3) { // Text
+        this.parentEl = parentEl.parentNode;
+      } else if (parentEl.nodeType === 1) { // Element
+        this.parentEl = parentEl;
+      }
+    }
   }
 
   doHighlight() {
@@ -86,6 +102,9 @@ class Highlighter {
     // eslint-disable-next-line max-len
     const highlightElements = this.highlighter.highlights[this.highlighter.highlights.length - 1].getHighlightElements();
 
+    // Add general highlight class
+    [].forEach.call(highlightElements, el => el.classList.add('highlight'));
+
     const lastEl = highlightElements[highlightElements.length - 1];
     const { highlightId, range } = this;
 
@@ -94,7 +113,7 @@ class Highlighter {
     remove.className = 'remove';
     remove.textContent = 'remove';
     remove.addEventListener('click', () => {
-      this.removeHighlight(lastEl, highlightId, range);
+      this.removeHighlight(lastEl, highlightElements, highlightId, range);
     });
     lastEl.append(remove);
 
@@ -102,7 +121,12 @@ class Highlighter {
     highlightElements.forEach((el) => {
       el.addEventListener('mouseenter', () => {
         const lastElChildEl = lastEl.childNodes[lastEl.childNodes.length - 1];
-        if (lastElChildEl.tagName.toLowerCase() === 'span' && lastElChildEl.className.toLowerCase() === 'remove') {
+
+        if (typeof lastElChildEl === 'undefined') {
+          return;
+        }
+
+        if (lastElChildEl.tagName === 'SPAN' && lastElChildEl.className === 'remove') {
           lastEl.childNodes[lastEl.childNodes.length - 1].classList.add('active');
         }
       });
@@ -160,8 +184,9 @@ class Highlighter {
     serializedRanges = serializedRanges.join('|');
 
     // Prepare data for storage
-    const rangeStr = JSON.stringify(this.range.toString());
-    const rangeHtml = JSON.stringify(this.range.toHtml());
+    const rangeStr = JSON.stringify(this.rangeStr);
+    const rangeHtml = JSON.stringify(this.rangeHtml);
+    const parentEl = JSON.stringify(this.parentEl);
     const location = JSON.stringify(this.location);
 
     const postData = {
@@ -169,6 +194,7 @@ class Highlighter {
         serializedRanges,
         rangeStr,
         rangeHtml,
+        parentEl,
         location,
       },
     };
@@ -204,9 +230,14 @@ class Highlighter {
     this.selection = this.rangy.getSelection();
     this.setRanges();
 
-    // Test selection object
+    // Test selection object for: 0 char length OR if text has been de-selected
     if (this.selection.toString().length === 0 || this.selection.isCollapsed) {
       return;
+    }
+
+    if (this.rangeHtml.indexOf('highlight') > -1) {
+      // TODO alert user
+      throw new Error('Highlights are overlapping');
     }
 
     // Set highlight ID
