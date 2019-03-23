@@ -103,7 +103,7 @@ const getActiveTab = (callback) => {
   // Gets all tabs that have the specified properties.
   // https://developer.chrome.com/extensions/tabs#method-query
   chrome.tabs.query({ active: true, currentWindow: true }, (tab) => {
-    callback(tab);
+    callback(tab[0]);
   });
 };
 
