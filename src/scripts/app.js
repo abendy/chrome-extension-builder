@@ -31,7 +31,7 @@ const App = {
   },
 
   messenger() {
-    messenger.initConnection('main', this.messageHandler);
+    this.connection = messenger.initConnection('main', this.messageHandler);
   },
 
   messageHandler(message, from, sender, sendResponse) {
