@@ -14,6 +14,7 @@ const connection = messenger.initConnection('main');
 
 onUpdatedTab((tabId, changeInfo, tab) => {
   connection.sendMessage(`content_script:main:${tabId}`, {
+    context: 'browser',
     action: 'tab-updated',
     tab,
   }).then((response) => {

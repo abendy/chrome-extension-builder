@@ -37,11 +37,11 @@ const App = {
   messageHandler(message, from, sender, sendResponse) {
     console.log(`${message.action} from ${from}`, message);
 
-    if (message.action === 'tab-updated') {
+    if (message.context === 'browser' && message.action === 'tab-updated') {
       sendResponse(`tab ${message.tab.id} updated: ${message.tab.title}`);
     }
 
-    if (message.action === 'process-page') {
+    if (message.context === 'app-general' && message.action === 'process-page') {
       sendResponse(App.extractPage());
     }
   },
