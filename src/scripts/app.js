@@ -41,7 +41,7 @@ const App = {
       sendResponse(`tab ${message.tab.id} updated: ${message.tab.title}`);
     }
 
-    if (message.context === 'app-general' && message.action === 'process-page') {
+    if (message.context === 'popup' && message.action === 'process-page') {
       sendResponse(App.extractPage());
     }
   },

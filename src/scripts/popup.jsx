@@ -38,7 +38,7 @@ class PopUp extends Component {
       });
 
       this.connection.sendMessage(`content_script:main:${activeTabId}`, {
-        context: 'app-general',
+        context: 'popup',
         action: 'process-page',
       }).then((response) => {
         this.setBackground();
