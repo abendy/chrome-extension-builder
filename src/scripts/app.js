@@ -35,7 +35,7 @@ const App = {
   },
 
   messageHandler(message, from, sender, sendResponse) {
-    console.log('from:', from, message);
+    console.log(`${message.action} from ${from}`, message);
 
     if (message.action === 'tab-updated') {
       sendResponse(`tab ${message.tab.id} updated: ${message.tab.title}`);
