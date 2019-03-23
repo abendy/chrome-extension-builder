@@ -46,16 +46,16 @@ const App = {
     }
   },
 
-  clickHandler(e, throttle = false) {
+  clickHandler(event, throttle = false) {
     const {
       button, detail, target, type,
-    } = e;
+    } = event;
 
     if (type === 'mouseup') {
       // Detect double & triple mouse click
       if (detail === 2 && !throttle) {
         // double click!
-        setTimeout(() => this.clickHandler(e, true), 300);
+        setTimeout(() => this.clickHandler(event, true), 300);
         return;
       }
 
