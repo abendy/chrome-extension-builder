@@ -5,7 +5,7 @@ import { rangySerializer as Serializer } from 'rangy-updated/lib/rangy-serialize
 import { rangySelectionsaverestore as Saver } from 'rangy-updated/lib/rangy-selectionsaverestore';
 import api from 'axios';
 import Cookies from 'js-cookie';
-import { deserializeSelection } from './utils/highlight-utils';
+import { serializePosition, deserializeSelection } from './utils/highlight-utils';
 
 class Highlighter {
   constructor() {
@@ -168,7 +168,7 @@ class Highlighter {
           const highlight = JSON.parse(highlights[key]);
 
           // Get selection object
-          this.selection = deserializeSelection(highlight.serializedRanges, this.doc, this.win);
+          this.selection = deserializeSelection(highlight.serializedRange, this.doc, this.win);
           this.setRanges();
 
           // Set highlight ID
@@ -188,13 +188,9 @@ class Highlighter {
   }
 
   saveHighlight() {
-    let serializedRanges = [];
-    Object.keys(this.ranges).forEach((i) => {
-      const rootNode = this.rangy.DomRange.getRangeDocument(this.ranges[i]).documentElement;
-      const serialized = `${this.rangy.serializePosition(this.ranges[i].startContainer, this.ranges[i].startOffset, rootNode)},${this.rangy.serializePosition(this.ranges[i].endContainer, this.ranges[i].endOffset, rootNode)}`;
-      serializedRanges[i] = serialized;
-    });
-    serializedRanges = serializedRanges.join('|');
+    // Serialize range
+    const rootNode = this.rangy.DomRange.getRangeDocument(this.range).documentElement;
+    const serializedRange = `${serializePosition(this.range.startContainer, this.range.startOffset, rootNode)},${serializePosition(this.range.endContainer, this.range.endOffset, rootNode)}`;
 
     // Prepare data for storage
     const rangeStr = JSON.stringify(this.rangeStr);
@@ -204,7 +200,7 @@ class Highlighter {
 
     const postData = {
       [this.highlightId]: {
-        serializedRanges,
+        serializedRange,
         rangeStr,
         rangeHtml,
         parentEl,
@@ -213,7 +209,7 @@ class Highlighter {
     };
 
     // Store data
-    Cookies.set(this.highlightId, serializedRanges);
+    Cookies.set(this.highlightId, serializedRange);
 
     api
       .post(`${this.db_host}/api/save/`, {
