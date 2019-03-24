@@ -1,6 +1,5 @@
 import rangy from 'rangy-updated';
 
-const deserializeRegex = /^([^,]+),([^,{]+)(\{([^}]+)\})?$/;
 
 export const deserializePosition = (serialized, rootNode) => {
   const parts = serialized.split(':');
@@ -22,7 +21,7 @@ export const deserializePosition = (serialized, rootNode) => {
 };
 
 export const deserializeRange = (serialized, rootNode, doc) => {
-  const result = deserializeRegex.exec(serialized);
+  const result = /^([^,]+),([^,{]+)(\{([^}]+)\})?$/.exec(serialized);
   const start = deserializePosition(result[1], rootNode, doc);
   const end = deserializePosition(result[2], rootNode, doc);
   const range = rangy.createRange(doc);
