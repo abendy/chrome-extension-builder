@@ -76,12 +76,11 @@ class Highlighter {
     this.rangeHtml = this.range.toHtml();
 
     if (this.selection.rangeCount > 0) {
-      const parentEl = this.range.commonAncestorContainer;
+      const { commonAncestorContainer } = this.range;
+      this.parentEl = commonAncestorContainer; // nodeType === 1 i.e. Element
 
-      if (parentEl.nodeType === 3) { // Text
-        this.parentEl = parentEl.parentNode;
-      } else if (parentEl.nodeType === 1) { // Element
-        this.parentEl = parentEl;
+      if (commonAncestorContainer.nodeType === 3) { // Text
+        this.parentEl = commonAncestorContainer.parentNode;
       }
     }
   }
