@@ -29,7 +29,6 @@ class Highlighter {
     delete this.range;
     delete this.rangeHtml;
     delete this.rangeStr;
-    delete this.ranges;
     delete this.selection;
   }
 
@@ -78,10 +77,8 @@ class Highlighter {
       });
   }
 
-  setRanges() {
-    // Get range objects
-    this.ranges = this.selection.getAllRanges();
-
+  setRange() {
+    // Get range object
     this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
     this.rangeStr = this.range.toString();
     this.rangeHtml = this.range.toHtml();
@@ -173,7 +170,7 @@ class Highlighter {
 
           // Get selection object
           this.selection = deserializeSelection(highlight.serializedRange, this.doc, this.win);
-          this.setRanges();
+          this.setRange();
 
           // Set highlight ID
           // eslint-disable-next-line no-param-reassign
@@ -235,7 +232,8 @@ class Highlighter {
   newHighlight() {
     // Get selection object
     this.selection = this.rangy.getSelection();
-    this.setRanges();
+    // Set range object
+    this.setRange();
 
     // Test selection object for: 0 char length OR if text has been de-selected
     if (this.selection.toString().length === 0 || this.selection.isCollapsed) {
