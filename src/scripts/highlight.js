@@ -22,6 +22,17 @@ class Highlighter {
     this.highlighter = this.rangy.createHighlighter();
   }
 
+  reset() {
+    delete this.classApplier;
+    delete this.highlightId;
+    delete this.parentEl;
+    delete this.range;
+    delete this.rangeHtml;
+    delete this.rangeStr;
+    delete this.ranges;
+    delete this.selection;
+  }
+
   setHighlightId(highlightId) {
     this.highlightId = highlightId;
     if (!highlightId) {
@@ -166,6 +177,9 @@ class Highlighter {
 
           // Highlighter
           this.doHighlight();
+
+          // Reset object
+          this.reset();
         });
       })
       .catch((error) => {
@@ -240,6 +254,9 @@ class Highlighter {
 
     // Highlighter
     this.doHighlight();
+
+    // Reset object
+    this.reset();
   }
 }
 
