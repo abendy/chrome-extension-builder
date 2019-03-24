@@ -149,13 +149,17 @@ class Highlighter {
     this.selection.collapseToEnd();
   }
 
-  restoreHighlight() {
+  restoreHighlight(highlightId = null) {
     // Get highlight data from database.
     const { hostname } = this;
+
+    // eslint-disable-next-line no-param-reassign
+    highlightId = (typeof this.highlightId !== 'undefined' ? this.highlightId : null);
 
     api
       .post(`${this.db_host}/api/get/`, {
         hostname,
+        highlight_id: highlightId,
       }, {
         headers: {
           'Content-Type': 'application/json',
@@ -172,7 +176,8 @@ class Highlighter {
           this.setRanges();
 
           // Set highlight ID
-          const [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
+          // eslint-disable-next-line no-param-reassign
+          [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
           this.setHighlightId(highlightId);
 
           // Highlighter
