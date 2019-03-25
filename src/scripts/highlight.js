@@ -146,16 +146,19 @@ class Highlighter {
     this.selection.collapseToEnd();
   }
 
-  restoreHighlight(highlightId = null) {
+  restoreHighlight() {
+    // Highlighter
+    this.doHighlight();
+
+    // Reset object
+    this.reset();
+  }
+
+  getHighlight(highlightId = null, callback = null) {
     // Get highlight data from database.
-    const { hostname } = this;
-
-    // eslint-disable-next-line no-param-reassign
-    highlightId = (typeof this.highlightId !== 'undefined' ? this.highlightId : null);
-
     api
       .post(`${this.db_host}/api/get/`, {
-        hostname,
+        hostname: this.hostname,
         highlight_id: highlightId,
       }, {
         headers: {
@@ -163,7 +166,11 @@ class Highlighter {
         },
       })
       .then((response) => {
-        const highlights = response.data;
+        let highlights = response.data;
+
+        if (typeof highlights === 'string') {
+          highlights = { [highlightId]: highlights };
+        }
 
         Object.keys(highlights).forEach((key) => {
           const highlight = JSON.parse(highlights[key]);
@@ -177,11 +184,7 @@ class Highlighter {
           [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
           this.setHighlightId(highlightId);
 
-          // Highlighter
-          this.doHighlight();
-
-          // Reset object
-          this.reset();
+          this[callback]();
         });
       })
       .catch((error) => {
