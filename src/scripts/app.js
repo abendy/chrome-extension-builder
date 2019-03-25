@@ -16,10 +16,10 @@ const App = {
   },
 
   fetch() {
-    highlight.restoreHighlight();
   },
 
   mounted() {
+    highlight.getHighlight(null, 'restoreHighlight');
   },
 
   events() {
