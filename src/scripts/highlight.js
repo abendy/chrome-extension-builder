@@ -39,7 +39,7 @@ class Highlighter {
     }
 
     const config = {
-      tagNames: ['img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'address', 'article', 'blockquote', 'dd', 'dl', 'dt', 'picture', 'figure', 'figcaption', 'li', 'ol', 'ul', 'pre', 'p', 'abbr', 'cite', 'code', 'dfn', 'em', 'i', 'q', 's', 'small', 'span', 'strong', 'sub', 'sup', 'u'],
+      applyToAnyTagName: true,
       elementTagName: 'span',
     };
     this.classApplier = this.rangy.createClassApplier(this.highlightId, config);
