@@ -239,7 +239,7 @@ class Highlighter {
     this.setRange();
 
     // Test selection object for: 0 char length OR if text has been de-selected
-    if (this.selection.toString().length === 0 || this.selection.isCollapsed) {
+    if (this.selection.toString().length <= 2 || this.selection.isCollapsed) {
       return;
     }
 
