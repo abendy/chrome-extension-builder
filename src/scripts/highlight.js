@@ -20,6 +20,7 @@ class Highlighter {
     this.hostname = this.location.hostname;
 
     this.highlighter = this.rangy.createHighlighter();
+    this.highlights = {};
   }
 
   reset() {
@@ -172,6 +173,10 @@ class Highlighter {
           highlights = { [highlightId]: highlights };
         }
 
+        // Save highlights to class
+        // TODO remove 0 key
+        this.highlights = { ...[this.highlights][0], ...highlights };
+
         Object.keys(highlights).forEach((key) => {
           const highlight = JSON.parse(highlights[key]);
 
@@ -212,6 +217,10 @@ class Highlighter {
         location,
       },
     };
+
+    // Save highlights to class
+    // TODO remove 0 key
+    this.highlights = { ...[this.highlights][0], ...postData };
 
     // Store data
     Cookies.set(this.highlightId, serializedRange);
