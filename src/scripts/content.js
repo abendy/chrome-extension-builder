@@ -1,4 +1,3 @@
-import { messenger } from './utils/browser-api';
 import App from './app';
 
 /* app */
@@ -17,19 +16,3 @@ if (document.readyState !== 'loading') {
     app(App, ext).init();
   });
 }
-
-/* messenger */
-
-const messageHandler = (message, from, sender, sendResponse) => {
-  console.log('from:', from, message);
-
-  if (message.action === 'tab-updated') {
-    sendResponse(`tab ${message.tab.id} updated: ${message.tab.title}`);
-  }
-
-  if (message.action === 'process-page') {
-    sendResponse(App.extractPage());
-  }
-};
-
-messenger.initConnection('main', messageHandler);

@@ -1,3 +1,4 @@
+import { messenger } from './utils/browser-api';
 import highlight from './highlight';
 import { cp } from './utils/app-utils';
 
@@ -7,6 +8,7 @@ const App = {
       'fetch',
       'mounted',
       'events',
+      'messenger',
       'extractPage',
     )(this);
 
@@ -22,14 +24,43 @@ const App = {
 
   events() {
     this.el.addEventListener('click', this.clickHandler.bind(this));
+    this.el.addEventListener('mousedown', this.clickHandler.bind(this));
+    this.el.addEventListener('mouseup', this.clickHandler.bind(this));
     window.addEventListener('keydown', this.keyBoardHandler.bind(this));
     return this;
   },
 
-  clickHandler(e) {
-    const { target } = e;
+  messenger() {
+    this.connection = messenger.initConnection('main', this.messageHandler);
+  },
 
-    highlight.newHighlight(e, target);
+  messageHandler(message, from, sender, sendResponse) {
+    console.log(`${message.action} from ${from}`, message);
+
+    if (message.context === 'browser' && message.action === 'tab-updated') {
+      sendResponse(`tab ${message.tab.id} updated: ${message.tab.title}`);
+    }
+
+    if (message.context === 'popup' && message.action === 'process-page') {
+      sendResponse(App.extractPage());
+    }
+  },
+
+  clickHandler(event, throttle = false) {
+    const {
+      button, detail, target, type,
+    } = event;
+
+    if (type === 'mouseup') {
+      // Detect double & triple mouse click
+      if (detail === 2 && !throttle) {
+        // double click!
+        setTimeout(() => this.clickHandler(event, true), 300);
+        return;
+      }
+
+      highlight.newHighlight();
+    }
   },
 
   keyBoardHandler(e) {

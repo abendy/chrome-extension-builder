@@ -5,7 +5,7 @@ import { rangySerializer as Serializer } from 'rangy-updated/lib/rangy-serialize
 import { rangySelectionsaverestore as Saver } from 'rangy-updated/lib/rangy-selectionsaverestore';
 import api from 'axios';
 import Cookies from 'js-cookie';
-import { deserializeSelection } from './utils/highlight-utils';
+import { serializePosition, deserializeSelection } from './utils/highlight-utils';
 
 class Highlighter {
   constructor() {
@@ -20,6 +20,17 @@ class Highlighter {
     this.hostname = this.location.hostname;
 
     this.highlighter = this.rangy.createHighlighter();
+    this.highlights = {};
+  }
+
+  reset() {
+    delete this.classApplier;
+    delete this.highlightId;
+    delete this.parentEl;
+    delete this.range;
+    delete this.rangeHtml;
+    delete this.rangeStr;
+    delete this.selection;
   }
 
   setHighlightId(highlightId) {
@@ -29,7 +40,7 @@ class Highlighter {
     }
 
     const config = {
-      tagNames: ['img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'address', 'article', 'blockquote', 'dd', 'dl', 'dt', 'picture', 'figure', 'figcaption', 'li', 'ol', 'ul', 'pre', 'p', 'abbr', 'cite', 'code', 'dfn', 'em', 'i', 'q', 's', 'small', 'span', 'strong', 'sub', 'sup', 'u'],
+      applyToAnyTagName: true,
       elementTagName: 'span',
     };
     this.classApplier = this.rangy.createClassApplier(this.highlightId, config);
@@ -67,21 +78,18 @@ class Highlighter {
       });
   }
 
-  setRanges() {
-    // Get range objects
-    this.ranges = this.selection.getAllRanges();
-
+  setRange() {
+    // Get range object
     this.range = this.selection.rangeCount ? this.selection.getRangeAt(0) : null;
     this.rangeStr = this.range.toString();
     this.rangeHtml = this.range.toHtml();
 
     if (this.selection.rangeCount > 0) {
-      const parentEl = this.range.commonAncestorContainer;
+      const { commonAncestorContainer } = this.range;
+      this.parentEl = commonAncestorContainer; // nodeType === 1 i.e. Element
 
-      if (parentEl.nodeType === 3) { // Text
-        this.parentEl = parentEl.parentNode;
-      } else if (parentEl.nodeType === 1) { // Element
-        this.parentEl = parentEl;
+      if (commonAncestorContainer.nodeType === 3) { // Text
+        this.parentEl = commonAncestorContainer.parentNode;
       }
     }
   }
@@ -119,19 +127,19 @@ class Highlighter {
 
     // Hover over highlight elements to display remove button
     highlightElements.forEach((el) => {
-      el.addEventListener('mouseenter', () => {
-        const lastElChildEl = lastEl.childNodes[lastEl.childNodes.length - 1];
+      const lastElLastChildEl = lastEl.childNodes[lastEl.childNodes.length - 1];
 
-        if (typeof lastElChildEl === 'undefined') {
+      el.addEventListener('mouseenter', () => {
+        if (typeof lastElLastChildEl === 'undefined') {
           return;
         }
 
-        if (lastElChildEl.tagName === 'SPAN' && lastElChildEl.className === 'remove') {
-          lastEl.childNodes[lastEl.childNodes.length - 1].classList.add('active');
+        if (lastElLastChildEl.tagName === 'SPAN' && lastElLastChildEl.className === 'remove') {
+          lastElLastChildEl.classList.add('active');
         }
       });
       el.addEventListener('mouseleave', () => {
-        lastEl.childNodes[lastEl.childNodes.length - 1].classList.remove('active');
+        lastElLastChildEl.classList.remove('active');
       });
     });
 
@@ -140,33 +148,48 @@ class Highlighter {
   }
 
   restoreHighlight() {
-    // Get highlight data from database.
-    const { hostname } = this;
+    // Highlighter
+    this.doHighlight();
 
+    // Reset object
+    this.reset();
+  }
+
+  getHighlight(highlightId = null, callback = null) {
+    // Get highlight data from database.
     api
       .post(`${this.db_host}/api/get/`, {
-        hostname,
+        hostname: this.hostname,
+        highlight_id: highlightId,
       }, {
         headers: {
           'Content-Type': 'application/json',
         },
       })
       .then((response) => {
-        const highlights = response.data;
+        let highlights = response.data;
+
+        if (typeof highlights === 'string') {
+          highlights = { [highlightId]: highlights };
+        }
+
+        // Save highlights to class
+        // TODO remove 0 key
+        this.highlights = { ...[this.highlights][0], ...highlights };
 
         Object.keys(highlights).forEach((key) => {
           const highlight = JSON.parse(highlights[key]);
 
           // Get selection object
-          this.selection = deserializeSelection(highlight.serializedRanges, this.doc, this.win);
-          this.setRanges();
+          this.selection = deserializeSelection(highlight.serializedRange, this.doc, this.win);
+          this.setRange();
 
           // Set highlight ID
-          const [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
+          // eslint-disable-next-line no-param-reassign
+          [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
           this.setHighlightId(highlightId);
 
-          // Highlighter
-          this.doHighlight();
+          this[callback]();
         });
       })
       .catch((error) => {
@@ -175,13 +198,9 @@ class Highlighter {
   }
 
   saveHighlight() {
-    let serializedRanges = [];
-    Object.keys(this.ranges).forEach((i) => {
-      const rootNode = this.rangy.DomRange.getRangeDocument(this.ranges[i]).documentElement;
-      const serialized = `${this.rangy.serializePosition(this.ranges[i].startContainer, this.ranges[i].startOffset, rootNode)},${this.rangy.serializePosition(this.ranges[i].endContainer, this.ranges[i].endOffset, rootNode)}`;
-      serializedRanges[i] = serialized;
-    });
-    serializedRanges = serializedRanges.join('|');
+    // Serialize range
+    const rootNode = this.rangy.DomRange.getRangeDocument(this.range).documentElement;
+    const serializedRange = `${serializePosition(this.range.startContainer, this.range.startOffset, rootNode)},${serializePosition(this.range.endContainer, this.range.endOffset, rootNode)}`;
 
     // Prepare data for storage
     const rangeStr = JSON.stringify(this.rangeStr);
@@ -191,7 +210,7 @@ class Highlighter {
 
     const postData = {
       [this.highlightId]: {
-        serializedRanges,
+        serializedRange,
         rangeStr,
         rangeHtml,
         parentEl,
@@ -199,8 +218,12 @@ class Highlighter {
       },
     };
 
+    // Save highlights to class
+    // TODO remove 0 key
+    this.highlights = { ...[this.highlights][0], ...postData };
+
     // Store data
-    Cookies.set(this.highlightId, serializedRanges);
+    Cookies.set(this.highlightId, serializedRange);
 
     api
       .post(`${this.db_host}/api/save/`, {
@@ -218,20 +241,14 @@ class Highlighter {
       });
   }
 
-  newHighlight(e, target, throttle = false) {
-    // Detect double & triple mouse click
-    if (e.detail === 2 && !throttle) {
-      // double click!
-      setTimeout(() => this.newHighlight(e, true), 300);
-      return;
-    }
-
+  newHighlight() {
     // Get selection object
     this.selection = this.rangy.getSelection();
-    this.setRanges();
+    // Set range object
+    this.setRange();
 
     // Test selection object for: 0 char length OR if text has been de-selected
-    if (this.selection.toString().length === 0 || this.selection.isCollapsed) {
+    if (this.selection.toString().length <= 2 || this.selection.isCollapsed) {
       return;
     }
 
@@ -248,6 +265,9 @@ class Highlighter {
 
     // Highlighter
     this.doHighlight();
+
+    // Reset object
+    this.reset();
   }
 }
 

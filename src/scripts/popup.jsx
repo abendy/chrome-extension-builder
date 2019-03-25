@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import {
-  messenger, getURL, storage, activeTab, newTab,
+  messenger, getURL, storage, getActiveTab, newTab,
 } from './utils/browser-api';
 
 class PopUp extends Component {
@@ -30,14 +30,15 @@ class PopUp extends Component {
       });
     };
 
-    activeTab((tab) => {
-      const activeTabId = tab[0].id;
+    getActiveTab((tab) => {
+      const activeTabId = tab.id;
 
       this.setState({
         tabid: activeTabId,
       });
 
       this.connection.sendMessage(`content_script:main:${activeTabId}`, {
+        context: 'popup',
         action: 'process-page',
       }).then((response) => {
         this.setBackground();
