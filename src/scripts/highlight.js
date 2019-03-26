@@ -58,6 +58,9 @@ class Highlighter {
     this.setHighlightId(highlightId);
     this.classApplier.undoToRange(range);
 
+    // Remove highlight from class
+    delete this.highlights[highlightId];
+
     // Delete data from database
     Cookies.remove(this.highlightId);
 
@@ -115,6 +118,10 @@ class Highlighter {
 
     // Add general highlight class
     [].forEach.call(highlightElements, el => el.classList.add('highlight'));
+
+    // Save highlight elements to class
+    // eslint-disable-next-line max-len
+    this.highlights[this.highlightId] = { ...this.highlights[this.highlightId], ...{ highlightElements } };
 
     const lastEl = highlightElements[highlightElements.length - 1];
     const { highlightId, range } = this;
@@ -176,10 +183,6 @@ class Highlighter {
           highlights = { [highlightId]: highlights };
         }
 
-        // Save highlights to class
-        // TODO remove 0 key
-        this.highlights = { ...[this.highlights][0], ...highlights };
-
         Object.keys(highlights).forEach((key) => {
           const highlight = JSON.parse(highlights[key]);
 
@@ -187,6 +190,9 @@ class Highlighter {
           // eslint-disable-next-line no-param-reassign
           [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
           this.setHighlightId(highlightId);
+
+          // Save highlight to class
+          this.highlights = { ...this.highlights, ...{ [highlightId]: highlight } };
 
           // Get selection object
           this.selection = deserializeSelection(highlight.serializedRange, this.doc, this.win);
@@ -221,9 +227,8 @@ class Highlighter {
       },
     };
 
-    // Save highlights to class
-    // TODO remove 0 key
-    this.highlights = { ...[this.highlights][0], ...postData };
+    // Save highlight to class
+    this.highlights = { ...this.highlights, ...postData };
 
     // Store data
     Cookies.set(this.highlightId, serializedRange);
