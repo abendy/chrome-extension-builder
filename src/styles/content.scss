@@ -5,8 +5,12 @@ h1,h2,h3,h4,h5,h6,address,article,blockquote,dd,dl,dt,picture,figure,figcaption,
   cursor: url('../../build/assets/images/cursor/baseline-brush-black-18/1x/baseline_brush_black_18dp.png'), auto;
 }
 
+::selection,
 [class^="highlight_"] {
   background-color: #acdbdf;
+}
+
+[class^="highlight_"] {
   cursor: auto;
   position: relative;
 }
