@@ -91,6 +91,9 @@ class Highlighter {
       if (commonAncestorContainer.nodeType === 3) { // Text
         this.parentEl = commonAncestorContainer.parentNode;
       }
+
+      // Set parent data attribute
+      this.parentEl.setAttribute('data-parent-for', this.highlightId);
     }
   }
 
@@ -180,14 +183,14 @@ class Highlighter {
         Object.keys(highlights).forEach((key) => {
           const highlight = JSON.parse(highlights[key]);
 
-          // Get selection object
-          this.selection = deserializeSelection(highlight.serializedRange, this.doc, this.win);
-          this.setRange();
-
           // Set highlight ID
           // eslint-disable-next-line no-param-reassign
           [, highlightId] = /^(highlight_[A-Za-z0-9]+)$/.exec(key);
           this.setHighlightId(highlightId);
+
+          // Get selection object
+          this.selection = deserializeSelection(highlight.serializedRange, this.doc, this.win);
+          this.setRange();
 
           this[callback]();
         });
@@ -242,6 +245,9 @@ class Highlighter {
   }
 
   newHighlight() {
+    // Set highlight ID
+    this.setHighlightId();
+
     // Get selection object
     this.selection = this.rangy.getSelection();
     // Set range object
@@ -256,9 +262,6 @@ class Highlighter {
       // TODO alert user
       throw new Error('Highlights are overlapping');
     }
-
-    // Set highlight ID
-    this.setHighlightId();
 
     // Save selection
     this.saveHighlight();
