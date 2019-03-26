@@ -279,6 +279,6 @@ class Highlighter {
   }
 }
 
-const highlight = new Highlighter();
+const highlighter = new Highlighter();
 
-export default highlight;
+export default highlighter;

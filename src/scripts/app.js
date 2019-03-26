@@ -1,5 +1,5 @@
 import { messenger } from './utils/browser-api';
-import highlight from './highlight';
+import highlighter from './highlight';
 import { cp } from './utils/app-utils';
 
 const App = {
@@ -19,7 +19,7 @@ const App = {
   },
 
   mounted() {
-    highlight.getHighlight(null, 'restoreHighlight');
+    highlighter.getHighlight(null, 'restoreHighlight');
   },
 
   events() {
@@ -59,7 +59,7 @@ const App = {
         return;
       }
 
-      highlight.newHighlight();
+      highlighter.newHighlight();
     }
   },
 
