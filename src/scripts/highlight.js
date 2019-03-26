@@ -96,7 +96,8 @@ class Highlighter {
       }
 
       // Set parent data attribute
-      this.parentEl.setAttribute('data-parent-for', this.highlightId);
+      const dataParentFor = this.parentEl.getAttribute('data-parent-for') !== null ? this.parentEl.getAttribute('data-parent-for') : '';
+      this.parentEl.setAttribute('data-parent-for', `${this.highlightId} ${dataParentFor}`);
     }
   }
 
