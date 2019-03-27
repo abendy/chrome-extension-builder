@@ -40,16 +40,12 @@ export const deserializeRange = (serialized, rootNode, doc) => {
   return range;
 };
 
-export const deserializeSelection = (serialized, rootNode, win) => {
-  const serializedRanges = serialized.split('|');
+export const deserializeSelection = (serializedRange, rootNode, win) => {
   const sel = rangy.getSelection(win);
-  const ranges = [];
 
-  Object.keys(serializedRanges).forEach((i) => {
-    ranges[i] = deserializeRange(serializedRanges[i], rootNode.documentElement, win.document);
-  });
+  const range = deserializeRange(serializedRange, rootNode.documentElement, win.document);
 
-  sel.setRanges(ranges);
+  sel.addRange(range);
 
   return sel;
 };
