@@ -48,26 +48,38 @@ class Highlighter {
     this.highlighter.addClassApplier(this.classApplier, true);
   }
 
-  removeHighlight(lastEl, highlightElements, highlightId, range) {
+  removeHighlight(highlightId) {
+    const highlight = this.highlights[highlightId];
+
+    const { highlightElements } = highlight;
+
     // Remove .remove element
+    const lastEl = highlightElements[highlightElements.length - 1];
     lastEl.removeChild(lastEl.lastElementChild);
 
-    // We need to remove the `highlight` first or undoToRange won't completely remove the highlight
-    [].forEach.call(highlightElements, el => el.classList.remove('highlight'));
+    [].forEach.call(highlightElements, (el) => {
+      const parentEl = el.parentNode;
 
-    this.setHighlightId(highlightId);
-    this.classApplier.undoToRange(range);
+      // move all children out of the element
+      while (el.firstChild) parentEl.insertBefore(el.firstChild, el);
+
+      // remove the empty element
+      parentEl.removeChild(el);
+
+      // Join adjacent text nodes
+      parentEl.normalize();
+    });
 
     // Remove highlight from class
     delete this.highlights[highlightId];
 
     // Delete data from database
-    Cookies.remove(this.highlightId);
+    Cookies.remove(highlightId);
 
     api
       .post(`${this.db_host}/api/delete/`, {
         hostname: this.hostname,
-        highlight_id: this.highlightId,
+        highlight_id: highlightId,
       }, {
         headers: {
           'Content-Type': 'application/json',
@@ -124,16 +136,15 @@ class Highlighter {
     // eslint-disable-next-line max-len
     this.highlights[this.highlightId] = { ...this.highlights[this.highlightId], ...{ highlightElements } };
 
-    const lastEl = highlightElements[highlightElements.length - 1];
-    const { highlightId, range } = this;
-
     // Set remove button with click event
+    const { highlightId } = this;
     const remove = document.createElement('span');
     remove.className = 'remove';
     remove.textContent = 'remove';
     remove.addEventListener('click', () => {
-      this.removeHighlight(lastEl, highlightElements, highlightId, range);
+      this.removeHighlight(highlightId);
     });
+    const lastEl = highlightElements[highlightElements.length - 1];
     lastEl.append(remove);
 
     // Hover over highlight elements to display remove button
