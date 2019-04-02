@@ -107,6 +107,23 @@ const getActiveTab = (callback) => {
   });
 };
 
+const getTabRealURL = (tab, callback) => {
+  if (tab.url !== 'chrome://newtab/') {
+    callback(tab.url);
+  } else {
+    chrome.webNavigation.getFrame({ tabId: tab.id, frameId: 0, processId: -1 }, (frame) => {
+      // eslint-disable-next-line no-unused-expressions
+      frame && callback(frame.url);
+    });
+  }
+};
+
+const getActiveTabRealURL = (callback) => {
+  getActiveTab((tab) => {
+    getTabRealURL(tab, callback);
+  });
+};
+
 // Fired when a browser action icon is clicked.
 // Does not fire if the browser action has a popup.
 // https://developer.chrome.com/extensions/browserAction#event-onClicked
@@ -158,6 +175,8 @@ export {
   getCurrent,
   getAllTabs,
   getActiveTab,
+  getTabRealURL,
+  getActiveTabRealURL,
   onClicked,
   setIcon,
   getPopup,
