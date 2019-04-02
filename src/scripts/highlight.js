@@ -157,6 +157,10 @@ class Highlighter {
 
         if (lastElLastChildEl.tagName === 'SPAN' && lastElLastChildEl.className === 'remove') {
           lastElLastChildEl.classList.add('active');
+
+          if (typeof lastElLastChildEl.offsetLeft === 'number' && lastElLastChildEl.offsetLeft < 0) {
+            lastElLastChildEl.style.right = `${lastElLastChildEl.offsetLeft / 16}rem`;
+          }
         }
       });
       el.addEventListener('mouseleave', () => {
