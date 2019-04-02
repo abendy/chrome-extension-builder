@@ -105,10 +105,6 @@ class Highlighter {
       if (commonAncestorContainer.nodeType === 3) { // Text
         this.parentEl = commonAncestorContainer.parentNode;
       }
-
-      // Set parent data attribute
-      const dataParentFor = this.parentEl.getAttribute('data-parent-for') !== null ? this.parentEl.getAttribute('data-parent-for') : '';
-      this.parentEl.setAttribute('data-parent-for', `${this.highlightId} ${dataParentFor}`);
     }
   }
 
