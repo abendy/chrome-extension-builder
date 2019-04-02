@@ -26,7 +26,6 @@ class Highlighter {
   reset() {
     delete this.classApplier;
     delete this.highlightId;
-    delete this.parentEl;
     delete this.range;
     delete this.rangeHtml;
     delete this.rangeStr;
@@ -226,7 +225,6 @@ class Highlighter {
     // Prepare data for storage
     const rangeStr = JSON.stringify(this.rangeStr);
     const rangeHtml = JSON.stringify(this.rangeHtml);
-    const parentEl = JSON.stringify(this.parentEl);
     const location = JSON.stringify(this.location);
 
     const postData = {
@@ -234,7 +232,6 @@ class Highlighter {
         serializedRange,
         rangeStr,
         rangeHtml,
-        parentEl,
         location,
       },
     };
